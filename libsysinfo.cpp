@@ -534,20 +534,20 @@ EXPORTED_FUNCTION const char *hreadable(double nbytes) {
 }
 
 int main() {
-  std::cout << "nodename(): " << nodename() << "\n" << 
-  "version(): " << version() << "\n" <<  
-  "release(): " << release() << "\n" <<  
-  "machine(): " << machine() << "\n" <<  
-  "sysname(): " << sysname() << "\n" <<  
-  "pubrand(): " << cpubrand() << "\n" <<  
-  "cpuvendor(): " << cpuvendor() << "\n" <<  
-  "numcpus(): " << numcpus() << "\n" <<  
-  "totalram(): " << hreadable(totalram()) << "\n" << 
-  "gpuvendor(): " << gpuvendor() << "\n" << 
-  "gpurenderer(): " << gpurenderer() << "\n" << 
-  "gpuversion(): " << gpuversion() << "\n" << 
-  "gpushadervers(): " << gpushadervers() << "\n" << 
-  "usedram(): " << hreadable(usedram()) << "\n" << 
+  std::cout << "nodename(): " << nodename() << "\n" <<
+  "sysname(): " << sysname() << "\n" <<
+  "version(): " << version() << "\n" <<
+  "release(): " << release() << "\n" <<
+  "machine(): " << machine() << "\n" <<
+  "cpubrand(): " << cpubrand() << "\n" <<
+  "cpuvendor(): " << cpuvendor() << "\n" <<
+  "numcpus(): " << numcpus() << "\n" <<
+  "gpuvendor(): " << gpuvendor() << "\n" <<
+  "gpurenderer(): " << gpurenderer() << "\n" <<
+  "gpuversion(): " << gpuversion() << "\n" <<
+  "gpushadervers(): " << gpushadervers() << "\n" <<
+  "totalram(): " << hreadable(totalram()) << "\n" <<
+  "usedram(): " << hreadable(usedram()) << "\n" <<
   "availram(): " << hreadable(availram()) << "\n";
   return 0;
 }
