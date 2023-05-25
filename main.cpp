@@ -24,6 +24,7 @@
  
 */
 
+#include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #if (defined(__APPLE__) && defined(__MACH__))
@@ -32,8 +33,6 @@
 #else
 #include <GL/gl.h>
 #endif
-
-#include <iostream>
 
 #include "sysinfo.hpp"
 
