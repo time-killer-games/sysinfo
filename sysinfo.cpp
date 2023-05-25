@@ -34,6 +34,7 @@
 #include <sstream>
 #include <cstring>
 #include <cstdio>
+#include <cmath>
 #if defined(_WIN32)
 #include <winsock2.h>
 #include <windows.h>
