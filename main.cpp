@@ -33,8 +33,18 @@
 #else
 #include <GL/gl.h>
 #endif
+#if defined(_MSC_VER)
+#if defined(_WIN32) && !defined(_WIN64)
+#pragma comment(lib, __FILE__"\\..\\lib\\x86\\glfw3.lib")
+#elif defined(_WIN32) && defined(_WIN64)
+#pragma comment(lib, __FILE__"\\..\\lib\\x64\\glfw3.lib")
+#endif
+#if defined(_WIN32)
+#pragma comment(lib, "opengl32.lib")
+#endif
+#endif
 
-#include "sysinfo.hpp"
+#include "system.hpp"
 
 static GLFWwindow *window = nullptr;
 static void create_opengl_context() {
