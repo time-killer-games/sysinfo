@@ -3,11 +3,11 @@ cd "${0%/*}"
 if [ $(uname) = "Darwin" ]; then
   clang++ main.cpp system.cpp libGLEW.a libglfw3.a -o sysinfo -std=c++17 -DGLEW_STATIC -Iinclude `pkg-config --cflags glfw3` `pkg-config --cflags glew` -framework Cocoa -framework IOKit -framework OpenGL -lobjc -arch arm64 -arch x86_64; ./sysinfo;
 elif [ $(uname) = "Linux" ]; then
-  clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL -lsysinfo; ./sysinfo;
+  clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
 elif [ $(uname) = "FreeBSD" ]; then
   clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL -lsysinfo; ./sysinfo;
 elif [ $(uname) = "DragonFly" ]; then
-  clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
+  clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL -lsysinfo; ./sysinfo;
 elif [ $(uname) = "NetBSD" ]; then
   clang++ main.cpp system.cpp -o sysinfo -std=c++17 `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
 elif [ $(uname) = "OpenBSD" ]; then
