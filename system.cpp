@@ -562,16 +562,7 @@ long long gpu_videomemory() {
 }
 
 std::string cpu_vendor() {
-  #if defined(_WIN32)
-  int regs[4];
-  char vendor[13];
-  __cpuid(regs, 0);
-  memcpy(vendor, &regs[1], 4);
-  memcpy(vendor + 4, &regs[3], 4);
-  memcpy(vendor + 8, &regs[2], 4);
-  vendor[12] = '\0';
-  return vendor;
-  #elif (defined(__APPLE__) && defined(__MACH__))
+  #if (defined(__APPLE__) && defined(__MACH__))
   char buf[1024];
   const char *result = nullptr;
   std::size_t len = sizeof(buf);
@@ -580,38 +571,29 @@ std::string cpu_vendor() {
   }
   std::string str;
   str = result ? result : "";
-  return str;
+  return str;  
   #else
-  int regs[4] { 0, 0, 0, 0 };
-  __asm__("mov $0x0, %eax\n\t");
-  __asm__("cpuid\n\t");
-  __asm__("mov %%ebx, %0\n\t":"=r" (regs[0]));
-  __asm__("mov %%edx, %0\n\t":"=r" (regs[1]));
-  __asm__("mov %%ecx, %0\n\t":"=r" (regs[2]));
-   return std::string((const char *)&regs);
+  std::string str = cpu_brand();
+  if (str.empty()) return "";
+  std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+  if (str.find("INTEL") != std::string::npos) {
+    return "GenuineIntel";
+  } else if (str.find("AMD") != std::string::npos) {
+    return "AuthenticAMD";
+  }
+  return "";
   #endif
 }
 
 std::string cpu_brand() {
   #if defined(_WIN32)
   const char *result = nullptr;
-  int CPUInfo[4];
-  unsigned nExIds, i = 0;
-  char CPUBrandString[0x40];
-  __cpuid(CPUInfo, 0x80000000);
-  nExIds = CPUInfo[0];
-  for (i = 0x80000000; i <= nExIds; i++) {
-    __cpuid(CPUInfo, i);
-    if  (i == 0x80000002) {
-      memcpy(CPUBrandString, CPUInfo, sizeof(CPUInfo));
-    } else if  (i == 0x80000003) {
-      memcpy(CPUBrandString + 16, CPUInfo, sizeof(CPUInfo));
-    } else if  (i == 0x80000004) {
-      memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
-    }
+  char buf[255]; 
+  DWORD sz = sizeof(buf);
+  if (RegGetValueA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\", "ProcessorNameString", RRF_RT_REG_SZ, nullptr, &buf, &sz) == ERROR_SUCCESS) {
+    result = buf;
   }
   std::string untrimmed;
-  result = CPUBrandString;
   untrimmed = result ? result : "";
   std::size_t pos = untrimmed.find_first_not_of(" ");
   if (pos != std::string::npos) {
