@@ -29,6 +29,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #endif
+#include <algorithm>
 #include <string>
 #include <thread>
 #include <sstream>
