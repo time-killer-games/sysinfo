@@ -595,12 +595,23 @@ std::string cpu_vendor() {
 std::string cpu_brand() {
   #if defined(_WIN32)
   const char *result = nullptr;
-  char buf[255]; 
-  DWORD sz = sizeof(buf);
-  if (RegGetValueA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\", "ProcessorNameString", RRF_RT_REG_SZ, nullptr, &buf, &sz) == ERROR_SUCCESS) {
-    result = buf;
+  int CPUInfo[4];
+  unsigned nExIds, i = 0;
+  char CPUBrandString[0x40];
+  __cpuid(CPUInfo, 0x80000000);
+  nExIds = CPUInfo[0];
+  for (i = 0x80000000; i <= nExIds; i++) {
+    __cpuid(CPUInfo, i);
+    if  (i == 0x80000002) {
+      memcpy(CPUBrandString, CPUInfo, sizeof(CPUInfo));
+    } else if  (i == 0x80000003) {
+      memcpy(CPUBrandString + 16, CPUInfo, sizeof(CPUInfo));
+    } else if  (i == 0x80000004) {
+      memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
+    }
   }
   std::string untrimmed;
+  result = CPUBrandString;
   untrimmed = result ? result : "";
   std::size_t pos = untrimmed.find_first_not_of(" ");
   if (pos != std::string::npos) {
