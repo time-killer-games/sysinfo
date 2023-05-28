@@ -272,7 +272,7 @@ std::string utsname_machine() {
   return str;
   #else
   SYSTEM_INFO sysinfo;
-  GetSystemInfo(&sysinfo);
+  GetNativeSystemInfo(&sysinfo);
   if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
     return "AMD64";  
   } else if (sysinfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM) {
@@ -563,7 +563,17 @@ long long gpu_videomemory() {
 }
 
 std::string cpu_vendor() {
-  #if (defined(__APPLE__) && defined(__MACH__))
+  #if (defined(_WIN32) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__))
+  std::string str = cpu_brand();
+  if (str.empty()) return "";
+  std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+  if (str.find("INTEL") != std::string::npos) {
+    return "GenuineIntel";
+  } else if (str.find("AMD") != std::string::npos) {
+    return "AuthenticAMD";
+  }
+  return "";
+  #elif (defined(__APPLE__) && defined(__MACH__))
   char buf[1024];
   const char *result = nullptr;
   std::size_t len = sizeof(buf);
@@ -573,15 +583,32 @@ std::string cpu_vendor() {
   std::string str;
   str = result ? result : "";
   return str;  
-  #else
-  std::string str = cpu_brand();
-  if (str.empty()) return "";
-  std::transform(str.begin(), str.end(), str.begin(), ::toupper);
-  if (str.find("INTEL") != std::string::npos) {
-    return "GenuineIntel";
-  } else if (str.find("AMD") != std::string::npos) {
-    return "AuthenticAMD";
+  #elif defined(__linux__)
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("lscpu | grep 'Vendor ID:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str.c_str();
   }
+  return "";
+  #elif defined(__OpenBSD__)
+  int mib[2];
+  char buf[1024];
+  mib[0] = CTL_HW;
+  mib[1] = HW_VENDOR;
+  std::size_t len = sizeof(buf);
+  if (!sysctl(mib, 2, buf, &len, nullptr, 0)) {
+    return strlen(buf) ? buf : "";
+  }
+  return "";
+  #else
   return "";
   #endif
 }
@@ -594,15 +621,7 @@ std::string cpu_brand() {
   if (RegGetValueA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\", "ProcessorNameString", RRF_RT_REG_SZ, nullptr, &buf, &sz) == ERROR_SUCCESS) {
     result = buf;
   }
-  std::string untrimmed;
-  untrimmed = result ? result : "";
-  std::size_t pos = untrimmed.find_first_not_of(" ");
-  if (pos != std::string::npos) {
-    std::string str;
-    str = untrimmed.substr(pos);
-    return str;
-  }
-  return "";
+  return result ? result : "";
   #elif (defined(__APPLE__) && defined(__MACH__))
   const char *result = nullptr;
   char buf[1024];
@@ -610,42 +629,33 @@ std::string cpu_brand() {
   if (!sysctlbyname("machdep.cpu.brand_string", &buf, &len, nullptr, 0)) {
     result = buf;
   }
-  std::string untrimmed;
-  result = result ? result : "";
-  untrimmed = result ? result : "";
-  std::size_t pos = untrimmed.find_first_not_of(" ");
-  if (pos != std::string::npos) {
-    std::string str;
-    str = untrimmed.substr(pos);
-    return str;
+  return result ? result : "";
+  #elif defined(__linux__)
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("lscpu | grep 'Model name:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str.c_str();
+  }
+  return "";
+  #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  int mib[2];
+  char buf[1024];
+  mib[0] = CTL_HW;
+  mib[1] = HW_MODEL;
+  std::size_t len = sizeof(buf);
+  if (!sysctl(mib, 2, buf, &len, nullptr, 0)) {
+    return strlen(buf) ? buf : "";
   }
   return "";
   #else
-  const char *result = nullptr;
-  char CPUBrandString[0x40];
-  unsigned CPUInfo[4] = { 0, 0, 0, 0 };
-  __cpuid(0x80000000, CPUInfo[0], CPUInfo[1], CPUInfo[2], CPUInfo[3]);
-  unsigned nExIds = CPUInfo[0];
-  memset(CPUBrandString, 0, sizeof(CPUBrandString));
-  for (unsigned i = 0x80000000; i <= nExIds; i++) {
-    __cpuid(i, CPUInfo[0], CPUInfo[1], CPUInfo[2], CPUInfo[3]);
-    if (i == 0x80000002) {
-      memcpy(CPUBrandString, CPUInfo, sizeof(CPUInfo));
-    } else if (i == 0x80000003) {
-      memcpy(CPUBrandString + 16, CPUInfo, sizeof(CPUInfo));
-    } else if (i == 0x80000004) {
-      memcpy(CPUBrandString + 32, CPUInfo, sizeof(CPUInfo));
-    }
-  }
-  std::string untrimmed;
-  result = CPUBrandString;
-  untrimmed = result ? result : "";
-  std::size_t pos = untrimmed.find_first_not_of(" ");
-  if (pos != std::string::npos) {
-    std::string str;
-    str = untrimmed.substr(pos);
-    return str;
-  }
   return "";
   #endif
 }
