@@ -92,14 +92,32 @@ static GLFWwindow *window = nullptr;
 static void create_opengl_context() {
   if (!window) {
     glewExperimental = true;
-    if (!glfwInit()) return;
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-    window = glfwCreateWindow(1, 1, "", nullptr, nullptr);
-    if (!window) return;
-    glfwMakeContextCurrent(window);
-    if (glewInit() != GLEW_OK) return;
+    if (glfwInit()) {
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+      glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+      window = glfwCreateWindow(1, 1, "", nullptr, nullptr);
+      if (window) {
+        glfwMakeContextCurrent(window);
+        if (window) {
+          glewInit();
+        }
+      }
+    }
+    #if defined(_WIN32)
+    if (!window) {
+      GLuint PixelFormat;
+      static PIXELFORMATDESCRIPTOR pfd;
+      HDC hDC = GetDC(GetDesktopWindow());
+      PixelFormat = ChoosePixelFormat(hDC, &pfd);
+      SetPixelFormat(hDC, PixelFormat, &pfd);
+      HGLRC hRC = wglCreateContext(hDC);
+      wglMakeCurrent(hDC, hRC);
+      // just doing this so window != nullptr...
+      window = (GLFWwindow *)GetDesktopWindow();
+      ReleaseDC(GetDesktopWindow(), hDC);
+    }
+    #endif
   }
 }
 
