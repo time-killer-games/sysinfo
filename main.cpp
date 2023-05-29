@@ -32,8 +32,9 @@ using namespace ngs::sys;
 
 int main() {
   std::cout <<
-  "System Name: " << utsname_sysname() << "\n" <<
   "Host Name: " << utsname_nodename() << "\n" <<
+  "OS Kernel: " << utsname_sysname() << "\n" <<
+  "OS Name: " << utsname_codename() << "\n" <<
   "OS Release: " << utsname_release() << "\n" <<
   "OS Version: " << utsname_version() << "\n" <<
   "OS Architecture: " << utsname_machine() << "\n" <<
