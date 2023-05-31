@@ -614,6 +614,8 @@ std::string gpu_vendor() {
           result = "AMD";
         } else if (str.find("NVIDIA") != std::string::npos || adapterDesc.VendorId == 0x10DE) {
           result = "NVIDIA Corporation";
+        } else if (str.find("MICROSOFT") != std::string::npos) {
+          result = "Microsoft Corporation";
         }
       }
 	  pAdapter->Release();
