@@ -708,7 +708,6 @@ std::string cpu_vendor() {
     }
   }
   #endif
-  #endif
   return "";
   #elif (defined(__APPLE__) && defined(__MACH__))
   char buf[1024];
