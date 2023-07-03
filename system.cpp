@@ -893,8 +893,9 @@ std::string cpu_brand() {
 
 int cpu_numcpus() {
   #if defined(_WIN32)
-  // TODO: Win32
-  return -1;
+  SYSTEM_INFO sysinfo;
+  GetNativeSystemInfo(&sysinfo);
+  return sysinfo.dwNumberOfProcessors;
   #elif (defined(__APPLE__) && defined(__MACH__))
   int physical_cpus = 0;
   std::size_t len = sizeof(int);
@@ -928,7 +929,6 @@ int cpu_numcpus() {
   }
   return -1;
   #else
-  // TODO: SunOS
   return -1;
   #endif
 }
