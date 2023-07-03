@@ -910,7 +910,19 @@ int cpu_numcpus() {
   }
   return -1;
   #elif defined(__linux__)
-  // TODO: Linux
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return strtol(str.c_str(), nulptr, 10);
+  }
   return -1;
   #else
   // TODO: SunOS
