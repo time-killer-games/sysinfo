@@ -770,7 +770,6 @@ long long gpu_videomemory() {
     pclose(fp);
   }
   #endif
-  if (!result) result = -1;
   videomemory = result;
   return result;
 }
