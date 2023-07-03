@@ -746,6 +746,11 @@ long long gpu_videomemory() {
     pFactory->Release();
   }
   #elif (defined(__APPLE__) && defined(__MACH__))
+  if (utsname_machine() == "arm64") {
+    /* arm64 macOS memory is "unified" meaning what would 
+    normally be free memory is used as video memory... */
+    return memory_availram();
+  }
   char buf[1024];
   FILE *fp = popen("ioreg -r -d 1 -w 0 -c \"IOAccelerator\" | grep '\"VRAM,totalMB\"' | uniq | awk -F '= ' '{print $2}'", "r");
   if (fp) {
@@ -759,7 +764,7 @@ long long gpu_videomemory() {
   }
   #else
   char buf[1024];
-  /* needs glxinfo installed via mesa-utils (linux) / glx-utils (bsd) package */
+  /* needs glxinfo installed via mesa-utils (Ubuntu), glx-utils (FreeBSD), or equivalent distro package */
   FILE *fp = popen("glxinfo 2> /dev/null | grep 'Video memory: ' | uniq | awk -F ': ' '{print $2}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
