@@ -299,7 +299,7 @@ std::string utsname_codename() {
   return product_name;
   #elif (defined(__APPLE__) && defined(__MACH__))
   std::string result;
-  FILE *fp = popen("echo $(sw_vers  | grep 'ProductName:' | uniq | awk '{$1=$1};1' && sw_vers  | grep 'ProductVersion:' | uniq | awk '{$1=$1};1')", "r");
+  FILE *fp = popen("echo $(sw_vers  | grep 'ProductName:' | uniq | awk '{$1=$1};1' && sw_vers  | grep 'ProductVersion:' | uniq | awk '{$1=$1};1') 2> /dev/null", "r");
   if (fp) {
     char buf[255];
     if (fgets(buf, sizeof(buf), fp)) {
@@ -336,7 +336,7 @@ std::string utsname_codename() {
   return str;
   #elif defined(__linux__)
   std::string result;
-  FILE *fp = popen("echo $(lsb_release --id && lsb_release --release && lsb_release --codename) |  tr '\n' ' '", "r");
+  FILE *fp = popen("echo $(lsb_release --id && lsb_release --release && lsb_release --codename) |  tr '\n' ' ' 2> /dev/null", "r");
   if (fp) {
     char buf[255];
     if (fgets(buf, sizeof(buf), fp)) {
@@ -746,7 +746,7 @@ long long gpu_videomemory() {
   }
   #elif (defined(__APPLE__) && defined(__MACH__))
   char buf[1024];
-  FILE *fp = popen("ioreg -r -d 1 -w 0 -c \"IOAccelerator\" | grep '\"VRAM,totalMB\"' | uniq | awk -F '= ' '{print $2}'", "r");
+  FILE *fp = popen("ioreg -r -d 1 -w 0 -c \"IOAccelerator\" | grep '\"VRAM,totalMB\"' | uniq | awk -F '= ' '{print $2}' 2> /dev/null", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -759,7 +759,7 @@ long long gpu_videomemory() {
   #else
   char buf[1024];
   /* needs glxinfo installed via mesa-utils (linux) / glx-utils (bsd) package */
-  FILE *fp = popen("glxinfo | grep 'Video memory: ' | uniq | awk -F ': ' '{print $2}'", "r");
+  FILE *fp = popen("glxinfo | grep 'Video memory: ' | uniq | awk -F ': ' '{print $2}' 2> /dev/null", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -818,7 +818,7 @@ std::string cpu_vendor() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Vendor ID:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'Vendor ID:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1' 2> /dev/null", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -864,7 +864,7 @@ std::string cpu_brand() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Model name:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'Model name:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1' 2> /dev/null", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -916,7 +916,7 @@ int cpu_numcpus() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f3- | awk '{$1=$1};1' 2> /dev/null", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
