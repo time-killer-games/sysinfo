@@ -891,11 +891,50 @@ std::string cpu_brand() {
   #endif
 }
 
-int cpu_numcpus() {
+int cpu_numcores() {
   #if defined(_WIN32)
-  SYSTEM_INFO sysinfo;
-  GetNativeSystemInfo(&sysinfo);
-  return sysinfo.dwNumberOfProcessors;
+  std::string result;
+  HANDLE stdin_read = nullptr; HANDLE stdin_write = nullptr;
+  HANDLE stdout_read = nullptr; HANDLE stdout_write = nullptr;
+  SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, true };
+  proceed = CreatePipe(&stdin_read, &stdin_write, &sa, 0);
+  if (proceed == false) return "";
+  SetHandleInformation(stdin_write, HANDLE_FLAG_INHERIT, 0);
+  proceed = CreatePipe(&stdout_read, &stdout_write, &sa, 0);
+  if (proceed == false) return "";
+  STARTUPINFOW si;
+  ZeroMemory(&si, sizeof(si));
+  si.cb = sizeof(STARTUPINFOW);
+  si.dwFlags = STARTF_USESTDHANDLES;
+  si.hStdError = stdout_write;
+  si.hStdOutput = stdout_write;
+  si.hStdInput = stdin_read;
+  PROCESS_INFORMATION pi; 
+  ZeroMemory(&pi, sizeof(pi));
+  BOOL success = CreateProcessW(nullptr, L"wmic cpu get NumberOfCores", nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
+  if (success) {
+    CloseHandle(stdout_write);
+    CloseHandle(stdin_read);
+    HANDLE wait_handles[] = { pi.hProcess, stdout_read };
+    while (MsgWaitForMultipleObjects(2, wait_handles, false, 5, QS_ALLEVENTS) != WAIT_OBJECT_0) {
+      if (ReadFile(stdout_read, buffer, BUFSIZ, &nRead, nullptr) && nRead) {
+        buffer[nRead] = '\0';
+        result.append(buffer, nRead);
+      }
+    }
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    CloseHandle(stdout_read);
+    CloseHandle(stdin_write);
+  }
+  if (!result.empty()) {
+    std::size_t pos = 0;
+    std::vector<std::string> vec;
+    if ((pos = result.find_first_of("\n")) != std::string::npos) {
+      return (int)strtol(result.substr(pos + 1).c_str(), nullptr, 10);
+    }
+  }
+  return -1;
   #elif (defined(__APPLE__) && defined(__MACH__))
   int physical_cpus = 0;
   std::size_t len = sizeof(int);
@@ -925,12 +964,17 @@ int cpu_numcpus() {
     pclose(fp);
     static std::string str;
     str = result ? result : "";
-    return strtol(str.c_str(), nullptr, 10);
+    return (int)strtol(str.c_str(), nullptr, 10);
   }
   return -1;
   #else
   return -1;
   #endif
+}
+
+int cpu_numcpus() {
+  auto result = std::thread::hardware_concurrency();
+  return (int)(result ? result : -1);
 }
 
 } // namespace ngs::sys

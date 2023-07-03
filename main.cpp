@@ -49,7 +49,8 @@ int main() {
   "Dedicated Video Memory: " << human_readable(gpu_videomemory()) << "\n" <<
   "CPU Vendor: " << cpu_vendor() << "\n" <<
   "CPU Brand String: " << cpu_brand() << "\n" <<
-  "Number of CPU Cores: " << std::to_string(cpu_numcpus()) << "\n";
+  "Number of CPU Cores: " << std::to_string(cpu_numcores()) << "\n" <<
+  "Number of CPU Processors: " << std::to_string(cpu_numcpus()) << "\n";
   return 0;
 }
 
