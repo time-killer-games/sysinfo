@@ -895,7 +895,14 @@ int cpu_numcpus() {
   #if defined(_WIN32)
   // TODO: Win32
   return -1;
-  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  #elif (defined(__APPLE__) && defined(__MACH__))
+  int physical_cpus = 0;
+  std::size_t len = sizeof(int);
+  if (!sysctlbyname("hw.physicalcpu", &physical_cpus, &len, nullptr, 0)) {
+    return physical_cpus;
+  }
+  return -1;
+  #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   int physical_cpus = 0;
   mib[0] = CTL_HW;
