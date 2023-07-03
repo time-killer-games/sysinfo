@@ -939,7 +939,7 @@ int cpu_numcores() {
     std::size_t pos = 0;
     std::vector<std::string> vec;
     if ((pos = result.find_first_of("\r\n")) != std::string::npos) {
-      return (int)strtol(result.substr(pos + 2).c_str(), nullptr, 10);
+      return (int)strtol(result.substr(pos).c_str(), nullptr, 10);
     }
   }
   return -1;
