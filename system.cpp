@@ -938,8 +938,8 @@ int cpu_numcores() {
   if (!result.empty()) {
     std::size_t pos = 0;
     std::vector<std::string> vec;
-    if ((pos = result.find_first_of("\n")) != std::string::npos) {
-      return (int)strtol(result.substr(pos + 1).c_str(), nullptr, 10);
+    if ((pos = result.find_first_of("\r\n")) != std::string::npos) {
+      return (int)strtol(result.substr(pos + 2).c_str(), nullptr, 10);
     }
   }
   return -1;
