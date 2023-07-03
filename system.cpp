@@ -924,7 +924,7 @@ int cpu_numcpus() {
     pclose(fp);
     static std::string str;
     str = result ? result : "";
-    return strtol(str.c_str(), nulptr, 10);
+    return strtol(str.c_str(), nullptr, 10);
   }
   return -1;
   #else
