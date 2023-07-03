@@ -936,10 +936,10 @@ int cpu_numcores() {
     CloseHandle(stdin_write);
   }
   if (!result.empty()) {
-    result = std::regex_replace(result.substr(pos), std::regex("NumberOfCores"), "");
-    result = std::regex_replace(result.substr(pos), std::regex(" "), "");
-    result = std::regex_replace(result.substr(pos), std::regex("\r"), "");
-    result = std::regex_replace(result.substr(pos), std::regex("\n"), "");
+    result = std::regex_replace(result, std::regex("NumberOfCores"), "");
+    result = std::regex_replace(result, std::regex(" "), "");
+    result = std::regex_replace(result, std::regex("\r"), "");
+    result = std::regex_replace(result, std::regex("\n"), "");
     static std::string res; 
     res = result;
     return (int)strtol(res.c_str(), nullptr, 10);
