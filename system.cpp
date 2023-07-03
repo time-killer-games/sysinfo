@@ -936,13 +936,13 @@ int cpu_numcores() {
     CloseHandle(stdin_write);
   }
   if (!result.empty()) {
-    std::size_t pos = 0;
-    std::vector<std::string> vec;
-    if ((pos = result.find_first_of("\r\n")) != std::string::npos) {
-      static std::string res;
-      res = std::regex_replace(result.substr(pos), std::regex("\r\n"), "");
-      return (int)strtol(res.c_str(), nullptr, 10);
-    }
+    result = std::regex_replace(result.substr(pos), std::regex("NumberOfCores"), "");
+    result = std::regex_replace(result.substr(pos), std::regex(" "), "");
+    result = std::regex_replace(result.substr(pos), std::regex("\r"), "");
+    result = std::regex_replace(result.substr(pos), std::regex("\n"), "");
+    static std::string res; 
+    res = result;
+    return (int)strtol(res.c_str(), nullptr, 10);
   }
   return -1;
   #elif (defined(__APPLE__) && defined(__MACH__))
