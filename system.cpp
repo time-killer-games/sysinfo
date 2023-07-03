@@ -925,7 +925,7 @@ int cpu_numcores() {
     CloseHandle(stdin_read);
     HANDLE wait_handles[] = { pi.hProcess, stdout_read };
     while (MsgWaitForMultipleObjects(2, wait_handles, false, 5, QS_ALLEVENTS) != WAIT_OBJECT_0) {
-      if (ReadFile(stdout_read, buffer, BUFSIZ, &nRead, nullptr) && nRead) {
+      while (ReadFile(stdout_read, buffer, BUFSIZ, &nRead, nullptr) && nRead) {
         buffer[nRead] = '\0';
         result.append(buffer, nRead);
       }
