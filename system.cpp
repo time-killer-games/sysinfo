@@ -918,6 +918,8 @@ int cpu_numcores() {
   BOOL success = CreateProcessW(nullptr, , nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
   delete[] cwstr_command;
   if (success) {
+    DWORD nRead = 0;
+    char buffer[BUFSIZ];
     CloseHandle(stdout_write);
     CloseHandle(stdin_read);
     HANDLE wait_handles[] = { pi.hProcess, stdout_read };
