@@ -765,6 +765,8 @@ long long gpu_videomemory() {
       buf[strlen(buf) - 1] = '\0';
       if (strlen(buf)) {
         result = strtoll(buf, nullptr, 10) * 1024 * 1024;
+      } else {
+        result = -1;
       }
     }
     pclose(fp);
