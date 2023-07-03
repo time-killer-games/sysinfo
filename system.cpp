@@ -915,7 +915,7 @@ int cpu_numcores() {
   std::size_t len = wcslen(L"wmic cpu get NumberOfCores");
   wchar_t *cwstr_command = new wchar_t[len]();
   wcsncpy_s(cwstr_command, len, L"wmic cpu get NumberOfCores", len);
-  BOOL success = CreateProcessW(nullptr, , nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
+  BOOL success = CreateProcessW(nullptr, cwstr_command, nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
   delete[] cwstr_command;
   if (success) {
     DWORD nRead = 0;
