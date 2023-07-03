@@ -31,6 +31,7 @@
 #endif
 #include <algorithm>
 #include <string>
+#include <thread>
 #include <fstream>
 #include <sstream>
 #include <regex>
