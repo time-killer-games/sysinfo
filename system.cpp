@@ -899,10 +899,10 @@ int cpu_numcores() {
   HANDLE stdout_read = nullptr; HANDLE stdout_write = nullptr;
   SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, true };
   proceed = CreatePipe(&stdin_read, &stdin_write, &sa, 0);
-  if (proceed == false) return "";
+  if (proceed == false) return -1;
   SetHandleInformation(stdin_write, HANDLE_FLAG_INHERIT, 0);
   proceed = CreatePipe(&stdout_read, &stdout_write, &sa, 0);
-  if (proceed == false) return "";
+  if (proceed == false) return -1;
   STARTUPINFOW si;
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(STARTUPINFOW);
@@ -912,7 +912,11 @@ int cpu_numcores() {
   si.hStdInput = stdin_read;
   PROCESS_INFORMATION pi; 
   ZeroMemory(&pi, sizeof(pi));
-  BOOL success = CreateProcessW(nullptr, L"wmic cpu get NumberOfCores", nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
+  std::size_t len = wcslen(L"wmic cpu get NumberOfCores");
+  wchar_t *cwstr_command = new wchar_t[len]();
+  wcsncpy_s(cwstr_command, len, L"wmic cpu get NumberOfCores", len);
+  BOOL success = CreateProcessW(nullptr, , nullptr, nullptr, true, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi);
+  delete[] cwstr_command;
   if (success) {
     CloseHandle(stdout_write);
     CloseHandle(stdin_read);
