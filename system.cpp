@@ -31,7 +31,6 @@
 #endif
 #include <algorithm>
 #include <string>
-#include <thread>
 #include <fstream>
 #include <sstream>
 #include <regex>
@@ -893,8 +892,30 @@ std::string cpu_brand() {
 }
 
 int cpu_numcpus() {
-  auto result = std::thread::hardware_concurrency();
-  return (int)(result ? result : -1);
+  #if defined(_WIN32)
+  // TODO: Win32
+  return -1;
+  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  int mib[2];
+  int physical_cpus = 0;
+  mib[0] = CTL_HW;
+  #if (defined(__APPLE__) && defined(__MACH__))
+  mib[1] = HW_PHYSICALCPU;
+  #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  mib[1] = HW_NCPU;
+  #endif
+  std::size_t len = sizeof(int);
+  if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
+    return physical_cpus;
+  }
+  return -1;
+  #elif defined(__linux__)
+  // TODO: Linux
+  return -1;
+  #else
+  // TODO: SunOS
+  return -1;
+  #endif
 }
 
 } // namespace ngs::sys
