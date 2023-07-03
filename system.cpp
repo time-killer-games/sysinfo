@@ -899,11 +899,7 @@ int cpu_numcpus() {
   int mib[2];
   int physical_cpus = 0;
   mib[0] = CTL_HW;
-  #if (defined(__APPLE__) && defined(__MACH__))
-  mib[1] = HW_PHYSICALCPU;
-  #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
   mib[1] = HW_NCPU;
-  #endif
   std::size_t len = sizeof(int);
   if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
     return physical_cpus;
