@@ -569,7 +569,7 @@ long long memory_totalvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    swaptbl_t *swaps = (swaptbl_t *)calloc(nswap, sizeof(swapent_t));
+    swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
@@ -645,7 +645,7 @@ long long memory_availvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    swaptbl_t *swaps = (swaptbl_t *)calloc(nswap, sizeof(swapent_t));
+    swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
@@ -721,7 +721,7 @@ long long memory_usedvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    swaptbl_t *swaps = (swaptbl_t *)calloc(nswap, sizeof(swapent_t));
+    swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
