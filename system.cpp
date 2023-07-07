@@ -81,7 +81,9 @@
 #endif
 #include <sys/sysctl.h>
 #endif
+#if !defined(__sun)
 #include <sys/utsname.h>
+#endif
 #endif
 #if (defined(_WIN32) && defined(_MSC_VER))
 #pragma comment(lib, "ws2_32.lib")
