@@ -223,7 +223,6 @@ std::string utsname_nodename() {
   return res;
   #endif
   #else
-  #else
   const char *result = nullptr;
   char buf[1024];
   WSADATA data;
