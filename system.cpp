@@ -447,9 +447,27 @@ std::string utsname_codename() {
   }
   static std::string str = result;
   return str;
-  #else
+  #elif !defined(__sun)
   return utsname_sysname() + " " + utsname_release();
+  #else
+  char *buf = nullptr;
+  std::size_t len = 0;
+  string buffer;
+  FILE *file = popen("cat /etc/release", "r");
+  if (file) {
+    if (getline(&buf, &len, file) != -1) {
+      buffer = buf;
+      free(buffer);
+    }
+    pclose(file);
+  }
+  if (!buffer.empty() && buffer.back() == '\n')
+    buffer.pop_back();
+  static string result;
+  result = buffer;
+  return result;
   #endif
+  return "";
 }
 
 std::string utsname_machine() {
