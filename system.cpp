@@ -95,6 +95,7 @@ static GLFWwindow *window = nullptr;
 #else
 int window = 0;
 #endif
+#endif
 
 #if (!defined(_WIN32) && defined(CREATE_OPENGL_CONTEXT))
 static void create_opengl_context() {
