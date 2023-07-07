@@ -47,6 +47,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <sys/swap.h>
+#include <unistd.h>
 #endif
 #endif
 #if defined(_WIN32)
