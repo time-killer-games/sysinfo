@@ -44,8 +44,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #else
-#include <glew.h>
-#include <GL/glut.h>
+#include <SDL.h>
+#include <SDL_opengl.h>
 #endif
 #endif
 #if defined(_WIN32)
@@ -93,7 +93,7 @@ namespace ngs::sys {
 #if !defined(__sun)
 static GLFWwindow *window = nullptr;
 #else
-int window = 0;
+static SDL_Window *window = nullptr;
 #endif
 #endif
 
@@ -126,18 +126,12 @@ static void create_opengl_context() {
   }
   #else
   if (!window) {
-    int argc = 1;
-    char **argv = nullptr;
-    argv[0] = strdup("sysinfo");
-    glutInit(&argc, argv);
-    free(argv[0]);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
-    glutInitWindowSize(1, 1);
-    glutInitWindowPosition(0, 0);
-    window = glutCreateWindow("");
-    glutDisplayFunc(nullptr); 
-    glutHideWindow();
-    glutMainLoop();
+    if (SDL_Init(SDL_INIT_VIDEO)) return;
+    window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+    if (!window) return;
+    SDL_GLContext context = SDL_GL_CreateContext(window);
+    if (!context) return;
+    SDL_GL_MakeCurrent(window, context);
   }
   #endif
 }
