@@ -127,10 +127,11 @@ static void create_opengl_context() {
   #else
   if (!window) {
     glutInit(nullptr, nullptr);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
     glutInitWindowSize(1, 1);
-    glutInitDisplayMode(0);
-    glutDisplayFunc(nullptr); 
+    glutInitWindowPosition(0, 0);
     window = glutCreateWindow("");
+    glutDisplayFunc(nullptr); 
     glutHideWindow();
     glutMainLoop();
   }
