@@ -46,6 +46,7 @@
 #else
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <sys/fcntl.h>
 #endif
 #endif
 #if defined(_WIN32)
@@ -159,6 +160,9 @@ std::string human_readable(long double nbytes) {
 
 std::string utsname_sysname() {
   #if !defined(_WIN32)
+  #if defined(__sun)
+  umask(~(S_IRWXU|S_IRGRP|S_IROTH) & S_IAMB);
+  #endif
   const char *result = nullptr;
   struct utsname name;
   if (!uname(&name))
