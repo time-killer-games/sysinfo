@@ -40,8 +40,13 @@
 #include <cstdio>
 #include <cmath>
 #if (!defined(_WIN32) && defined(CREATE_OPENGL_CONTEXT))
+#if !defined(__sun)
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#else
+#include <glew.h>
+#include <GL/glut.h>
+#endif
 #endif
 #if defined(_WIN32)
 #include <winsock2.h>
@@ -85,7 +90,10 @@
 namespace ngs::sys {
 
 #if (!defined(_WIN32) && defined(CREATE_OPENGL_CONTEXT))
+#if !defined(__sun)
 static GLFWwindow *window = nullptr;
+#else
+int window = 0;
 #endif
 
 #if (!defined(_WIN32) && defined(CREATE_OPENGL_CONTEXT))
@@ -99,6 +107,7 @@ static void create_opengl_context() {
     return;
   }
   #endif
+  #if !defined(__sun)
   if (!window) {
     glewExperimental = true;
     if (glfwInit()) {
@@ -114,6 +123,16 @@ static void create_opengl_context() {
       }
     }
   }
+  #else
+  if (!window) {
+    glutInit(nullptr, nullptr);
+    glutInitWindowSize(1, 1);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    window = glutCreateWindow("");
+    std::thread(glutMainLoop);
+    glutHideWindow();
+  }
+  #endif
 }
 #endif
 
