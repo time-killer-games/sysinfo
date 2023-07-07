@@ -131,7 +131,7 @@ static void create_opengl_context() {
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     window = glutCreateWindow("");
     glutHideWindow();
-    glutMainLoop();
+    //glutMainLoop();
   }
   #endif
 }
