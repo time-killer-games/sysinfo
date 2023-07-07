@@ -46,7 +46,6 @@
 #else
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <sys/systeminfo.h> 
 #include <sys/swap.h>
 #include <unistd.h>
 #endif
@@ -162,7 +161,6 @@ std::string human_readable(long double nbytes) {
 
 std::string utsname_sysname() {
   #if !defined(_WIN32)
-  #if !defined(__sun)
   const char *result = nullptr;
   struct utsname name;
   if (!uname(&name))
@@ -170,20 +168,6 @@ std::string utsname_sysname() {
   std::string str;
   str = result ? result : "";
   return str;
-  #else
-  std::string res;
-  long count = sysinfo(SI_SYSNAME, nullptr, 0);
-  if (count > 0) {
-    char *buf = (char *)calloc(count, sizeof(char));
-    if (buf) {
-      if (sysinfo(SI_SYSNAME, buf, count) > 0) {
-        res = buf;
-      }
-      free(buf);
-    }
-  }
-  return res;
-  #endif
   #else
   const char *result = nullptr;
   char buf[255]; 
