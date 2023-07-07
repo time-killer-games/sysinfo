@@ -457,7 +457,7 @@ std::string utsname_codename() {
   if (file) {
     if (getline(&buf, &len, file) != -1) {
       buffer = buf;
-      free(buffer);
+      free(buf);
     }
     pclose(file);
   }
