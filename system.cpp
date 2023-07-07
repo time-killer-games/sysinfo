@@ -130,7 +130,7 @@ static void create_opengl_context() {
     glutInitWindowSize(1, 1);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     window = glutCreateWindow("");
-    std::thread(glutMainLoop);
+    glutMainLoop();
     glutHideWindow();
   }
   #endif
