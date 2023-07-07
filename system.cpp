@@ -565,9 +565,7 @@ long long memory_totalvmem() {
   return -1;
   #elif defined(__sun)
   long long total = 0;
-  long block_s = 0;
-  int header_len = 0;
-  getbsize(&header_len, &block_s);
+  long page_s = sysconf(_SC_PAGESIZE);
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
@@ -575,7 +573,7 @@ long long memory_totalvmem() {
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          total += ((swaps[i].ste_pages / (1024 / block_s)) * 1024);
+          total += (swaps[i].ste_pages * page_s);
         }
       }
       free(swaps);
@@ -643,9 +641,7 @@ long long memory_availvmem() {
   return -1;
   #elif defined(__sun)
   long long avail = 0;
-  long block_s = 0;
-  int header_len = 0;
-  getbsize(&header_len, &block_s);
+  long page_s = sysconf(_SC_PAGESIZE);
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
@@ -653,7 +649,7 @@ long long memory_availvmem() {
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          avail += ((swaps[i].ste_free / (1024 / block_s)) * 1024);
+          avail += (swaps[i].ste_free * page_s);
         }
       }
       free(swaps);
@@ -731,7 +727,7 @@ long long memory_usedvmem() {
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          used += (((swaps[i].ste_pages - swaps[i].ste_free) / (1024 / block_s)) * 1024);
+          used += ((swaps[i].ste_pages - swaps[i].ste_free) * page_s);
         }
       }
       free(swaps);
