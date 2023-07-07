@@ -553,10 +553,10 @@ long long memory_totalvmem() {
   if (nswap > 0) {
     struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
     if (swaps) {
-      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      char *strtab = (char *)malloc((nswap + 1) * 80);
       if (strtab) {
         for (int i = 0; i < (nswap + 1); i++) {
-          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
+          s->swt_ent[i].ste_path = strtab + (i * 80);
         }
         if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
           for (int i = 0; i < nswap; i++) {
@@ -578,10 +578,10 @@ long long memory_totalvmem() {
   if (nswap > 0) {
     swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
-      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      char *strtab = (char *)malloc((nswap + 1) * 80);
       if (strtab) {
         for (int i = 0; i < (nswap + 1); i++) {
-          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
+          s->swt_ent[i].ste_path = strtab + (i * 80);
         }
         if (swapctl(SC_LIST, swaps) > 0) {
           for (int i = 0; i < nswap; i++) {
@@ -661,10 +661,10 @@ long long memory_availvmem() {
   if (nswap > 0) {
     swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
-      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      char *strtab = (char *)malloc((nswap + 1) * 80);
       if (strtab) {
         for (int i = 0; i < (nswap + 1); i++) {
-          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
+          s->swt_ent[i].ste_path = strtab + (i * 80);
         }
         if (swapctl(SC_LIST, swaps) > 0) {
           for (int i = 0; i < nswap; i++) {
