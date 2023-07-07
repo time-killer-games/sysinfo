@@ -1032,8 +1032,7 @@ int cpu_numcores() {
     numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
-  #else
-  psrinfo -p
+  #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("psrinfo -p", "r");
@@ -1048,6 +1047,8 @@ int cpu_numcores() {
     numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
+  #else
+  return -1;
   #endif
 }
 
