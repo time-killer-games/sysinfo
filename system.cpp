@@ -717,9 +717,7 @@ long long memory_usedvmem() {
   return -1;
   #elif defined(__sun)
   long long used = 0;
-  long block_s = 0;
-  int header_len = 0;
-  getbsize(&header_len, &block_s);
+  long page_s = sysconf(_SC_PAGESIZE);
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
