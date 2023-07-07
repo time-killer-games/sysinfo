@@ -550,20 +550,11 @@ long long memory_totalvmem() {
   getbsize(&header_len, &block_s);
   int nswap = swapctl(SWAP_NSWAP, nullptr, 0);
   if (!nswap) return 0;
-  if (nswap > 0) {
-    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
-    if (swaps) {
-      char *strtab = (char *)malloc((nswap + 1) * 80);
-      if (strtab) {
-        for (int i = 0; i < (nswap + 1); i++) {
-          swaps->swt_ent[i].ste_path = strtab + (i * 80);
+    if (nswap > 0) {
+      if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
+        for (int i = 0; i < nswap; i++) {
+          total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
         }
-        if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
-          for (int i = 0; i < nswap; i++) {
-            total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
-          }
-        }
-        free(strtab);
       }
       free(swaps);
     }
@@ -744,10 +735,17 @@ long long memory_usedvmem() {
   if (nswap > 0) {
     swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
-      if (swapctl(SC_LIST, swaps) > 0) {
-        for (int i = 0; i < nswap; i++) {
-          used += ((swaps->swt_ent[i].ste_pages - swaps->swt_ent[i].ste_free) * page_s);
+      char *strtab = (char *)malloc((nswap + 1) * 80);
+      if (strtab) {
+        for (int i = 0; i < (nswap + 1); i++) {
+          swaps->swt_ent[i].ste_path = strtab + (i * 80);
         }
+        if (swapctl(SC_LIST, swaps) > 0) {
+          for (int i = 0; i < nswap; i++) {
+            used += ((swaps->swt_ent[i].ste_pages - swaps->swt_ent[i].ste_free) * page_s);
+          }
+        }
+        free(strtab);
       }
       free(swaps);
     }
