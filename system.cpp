@@ -46,6 +46,7 @@
 #else
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <sys/swap.h>
 #endif
 #endif
 #if defined(_WIN32)
@@ -328,7 +329,7 @@ std::string utsname_codename() {
   return product_name;
   #elif (defined(__APPLE__) && defined(__MACH__))
   std::string result;
-  FILE *fp = popen("echo $(sw_vers  | grep 'ProductName:' | uniq | awk '{$1=$1};1' && sw_vers  | grep 'ProductVersion:' | uniq | awk '{$1=$1};1')", "r");
+  FILE *fp = popen("echo $(sw_vers | grep 'ProductName:' | uniq | awk '{$1=$1};1' && sw_vers | grep 'ProductVersion:' | uniq | awk '{$1=$1};1')", "r");
   if (fp) {
     char buf[255];
     if (fgets(buf, sizeof(buf), fp)) {
@@ -561,6 +562,26 @@ long long memory_totalvmem() {
     return total;
   }
   return -1;
+  #elif defined(__sun)
+  long long total = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
+  int nswap = swapctl(SC_GETNSWP, nullptr);
+  if (!nswap) return 0;
+  if (nswap > 0) {
+    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    if (swaps) {
+      if (swapctl(SC_LIST, swaps) > 0) {
+        for (int i = 0; i < nswap; i++) {
+          total += ((swaps[i].ste_pages / (1024 / block_s)) * 1024);
+        }
+      }
+      free(swaps);
+    }
+    return total;
+  }
+  return -1;
   #else
   return -1;
   #endif
@@ -619,6 +640,26 @@ long long memory_availvmem() {
     return avail;
   }
   return -1;
+  #elif defined(__sun)
+  long long avail = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
+  int nswap = swapctl(SC_GETNSWP, nullptr);
+  if (!nswap) return 0;
+  if (nswap > 0) {
+    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    if (swaps) {
+      if (swapctl(SC_LIST, swaps) > 0) {
+        for (int i = 0; i < nswap; i++) {
+          avail += ((swaps[i].ste_free / (1024 / block_s)) * 1024);
+        }
+      }
+      free(swaps);
+    }
+    return avail;
+  }
+  return -1;
   #else
   return -1;
   #endif
@@ -670,6 +711,26 @@ long long memory_usedvmem() {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
           used += ((swaps[i].se_inuse / (1024 / block_s)) * 1024);
+        }
+      }
+      free(swaps);
+    }
+    return used;
+  }
+  return -1;
+  #elif defined(__sun)
+  long long used = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
+  int nswap = swapctl(SC_GETNSWP, nullptr);
+  if (!nswap) return 0;
+  if (nswap > 0) {
+    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    if (swaps) {
+      if (swapctl(SC_LIST, swaps) > 0) {
+        for (int i = 0; i < nswap; i++) {
+          used += (((swaps[i].ste_pages - swaps[i].ste_free) / (1024 / block_s)) * 1024);
         }
       }
       free(swaps);
