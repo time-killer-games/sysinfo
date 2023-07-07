@@ -553,10 +553,17 @@ long long memory_totalvmem() {
   if (nswap > 0) {
     struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
     if (swaps) {
-      if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
-        for (int i = 0; i < nswap; i++) {
-          total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
+      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      if (strtab) {
+        for (int i = 0; i < (nswap + 1); i++) {
+          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
         }
+        if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
+          for (int i = 0; i < nswap; i++) {
+            total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
+          }
+        }
+        free(strtab);
       }
       free(swaps);
     }
@@ -571,10 +578,17 @@ long long memory_totalvmem() {
   if (nswap > 0) {
     swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
-      if (swapctl(SC_LIST, swaps) > 0) {
-        for (int i = 0; i < nswap; i++) {
-          total += (swaps->swt_ent[i].ste_pages * page_s);
+      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      if (strtab) {
+        for (int i = 0; i < (nswap + 1); i++) {
+          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
         }
+        if (swapctl(SC_LIST, swaps) > 0) {
+          for (int i = 0; i < nswap; i++) {
+            total += (swaps->swt_ent[i].ste_pages * page_s);
+          }
+        }
+        free(strtab);
       }
       free(swaps);
     }
@@ -647,10 +661,17 @@ long long memory_availvmem() {
   if (nswap > 0) {
     swaptbl_t *swaps = (swaptbl_t *)malloc(nswap * sizeof(swapent_t));
     if (swaps) {
-      if (swapctl(SC_LIST, swaps) > 0) {
-        for (int i = 0; i < nswap; i++) {
-          avail += (swaps->swt_ent[i].ste_free * page_s);
+      char *strtab = (char *)malloc((nswap + 1) * MAXSTRSIZE);
+      if (strtab) {
+        for (int i = 0; i < (nswap + 1); i++) {
+          s->swt_ent[i].ste_path = strtab + (i * MAXSTRSIZE);
         }
+        if (swapctl(SC_LIST, swaps) > 0) {
+          for (int i = 0; i < nswap; i++) {
+            avail += (swaps->swt_ent[i].ste_free * page_s);
+          }
+        }
+        free(strtab);
       }
       free(swaps);
     }
