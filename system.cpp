@@ -172,6 +172,7 @@ std::string utsname_sysname() {
   std::string str;
   str = result ? result : "";
   return str;
+  #else
   std::string res;
   long count = sysinfo(SI_SYSNAME, nullptr, 0);
   if (count > 0) {
