@@ -126,7 +126,9 @@ static void create_opengl_context() {
   }
   #else
   if (!window) {
-    glutInit(nullptr, nullptr);
+    int argc;
+    char **argv = nullptr;
+    glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
     glutInitWindowSize(1, 1);
     glutInitWindowPosition(0, 0);
