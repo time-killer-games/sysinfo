@@ -453,7 +453,7 @@ std::string utsname_codename() {
   char *buf = nullptr;
   std::size_t len = 0;
   std::string buffer;
-  FILE *file = popen("cat /etc/release", "r");
+  FILE *file = popen("cat /etc/release | awk '{$1=$1};1'", "r");
   if (file) {
     if (getline(&buf, &len, file) != -1) {
       buffer = buf;
