@@ -13,7 +13,7 @@ elif [ $(uname) = "NetBSD" ]; then
 elif [ $(uname) = "OpenBSD" ]; then
   clang++ main.cpp system.cpp -o sysinfo -std=c++17 -DCREATE_OPENGL_CONTEXT `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
 elif [ $(uname) = "SunOS" ]; then
-  export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig && g++ main.cpp system.cpp -o sysinfo -std=c++17 -DCREATE_OPENGL_CONTEXT -static-libgcc `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
+  export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig && g++ main.cpp system.cpp -o sysinfo -std=c++17 -DCREATE_OPENGL_CONTEXT -static-libgcc `pkg-config --cflags --libs freeglut` `pkg-config --cflags --libs glew` -lGL; ./sysinfo;
 else
   g++ main.cpp system.cpp -o sysinfo.exe -std=c++17 -DCREATE_OPENGL_CONTEXT -DGLEW_STATIC -static-libgcc -static-libstdc++ -static -lws2_32 -ldxgi; ./sysinfo.exe;
 fi
