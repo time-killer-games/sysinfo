@@ -569,11 +569,11 @@ long long memory_totalvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    struct swaptbl_t *swaps = (struct swaptbl_t *)calloc(nswap, sizeof(struct swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          total += (swaps[i].ste_pages * page_s);
+          total += (swaps->swt_ent[i].ste_pages * page_s);
         }
       }
       free(swaps);
@@ -645,11 +645,11 @@ long long memory_availvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    struct swaptbl_t *swaps = (struct swaptbl_t *)calloc(nswap, sizeof(struct swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          avail += (swaps[i].ste_free * page_s);
+          avail += (swaps->swt_ent[i].ste_free * page_s);
         }
       }
       free(swaps);
@@ -721,11 +721,11 @@ long long memory_usedvmem() {
   int nswap = swapctl(SC_GETNSWP, nullptr);
   if (!nswap) return 0;
   if (nswap > 0) {
-    struct swapent *swaps = (struct swapent *)calloc(nswap, sizeof(struct swapent));
+    struct swaptbl_t *swaps = (struct swaptbl_t *)calloc(nswap, sizeof(struct swapent_t));
     if (swaps) {
       if (swapctl(SC_LIST, swaps) > 0) {
         for (int i = 0; i < nswap; i++) {
-          used += ((swaps[i].ste_pages - swaps[i].ste_free) * page_s);
+          used += ((swaps->swt_ent[i].ste_pages - swaps->swt_ent[i].ste_free) * page_s);
         }
       }
       free(swaps);
