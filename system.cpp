@@ -592,21 +592,7 @@ long long memory_availram() {
   }
   return -1;
   #elif defined(__sun)
-  char buf[1024];
-  long long avail = -1;
-  const char *result = nullptr;
-  FILE *fp = popen("vmstat | awk 'FNR == 3 {print $5}'", "r");
-  if (fp) {
-    if (fgets(buf, sizeof(buf), fp)) {
-      buf[strlen(buf) - 1] = '\0';
-      result = buf;
-    }
-    pclose(fp);
-    static std::string str;
-    str = (result && strlen(result)) ? result : "-1";
-    avail = strtoll(str.c_str(), nullptr, 10) * 1024;
-  }
-  return avail;
+  return (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE));
   #else
   return -1;  
   #endif
