@@ -1074,6 +1074,7 @@ std::string cpu_vendor() {
   }
   return "";
   #elif defined(__sun)
+  char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("prtdiag -v | grep 'System Configuration:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
   if (fp) {
@@ -1134,6 +1135,7 @@ std::string cpu_brand() {
   }
   return "";
   #elif defined(__sun)
+  char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("prtdiag -v | grep 'BIOS Configuration:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
   if (fp) {
