@@ -1073,6 +1073,19 @@ std::string cpu_vendor() {
     return str;
   }
   return "";
+  #elif defined(__sun)
+  const char *result = nullptr;
+  FILE *fp = popen("prtdiag -v | grep 'System Configuration:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+  }
+  static std::string str;
+  str = result ? result : "";
+  return str;
   #else
   return "";
   #endif
@@ -1120,6 +1133,19 @@ std::string cpu_brand() {
     return strlen(buf) ? buf : "";
   }
   return "";
+  #elif defined(__sun)
+  const char *result = nullptr;
+  FILE *fp = popen("prtdiag -v | grep 'BIOS Configuration:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+  }
+  static std::string str;
+  str = result ? result : "";
+  return str;
   #else
   return "";
   #endif
