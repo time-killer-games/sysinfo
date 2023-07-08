@@ -546,7 +546,7 @@ long long memory_totalram() {
   char buf[1024];
   long long total = -1;
   const char *result = nullptr;
-  FILE *fp = popen("kstat -n system_pages | grep physmem | awk -F ' ' '{printf $2}'", "r");
+  FILE *fp = popen("vmstat 1 1 | tail -1 | awk '{ print $5 / 1024 }'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -595,7 +595,7 @@ long long memory_availram() {
   char buf[1024];
   long long avail = -1;
   const char *result = nullptr;
-  FILE *fp = popen("kstat -n system_pages | grep freemem | awk -F ' ' '{printf $2}'", "r");
+  FILE *fp = popen("vmstat 1 1 | tail -1 | awk '{print $5}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
