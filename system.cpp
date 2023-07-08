@@ -555,7 +555,7 @@ long long memory_totalram() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    total = strtoll(str.c_str(), nullptr, 10) * 1024 * 1024;
+    total = strtoll(str.c_str(), nullptr, 10) * 1024;
   }
   return total;
   #else
@@ -604,7 +604,7 @@ long long memory_availram() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    avail = strtoll(str.c_str(), nullptr, 10) * 1024 * 1024;
+    avail = strtoll(str.c_str(), nullptr, 10) * 1024;
   }
   return avail;
   #else
