@@ -595,7 +595,7 @@ long long memory_availram() {
   char buf[1024];
   long long avail = -1;
   const char *result = nullptr;
-  FILE *fp = popen("sar -r 1 1 | awk 'FNR == 5 {print $2}'", "r");
+  FILE *fp = popen("vmstat | awk 'FNR == 3 {print $5}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
