@@ -546,7 +546,7 @@ long long memory_totalram() {
   char buf[1024];
   long long total = -1;
   const char *result = nullptr;
-  FILE *fp = popen("prtdiag -v | grep 'Memory size:' | uniq | cut -d' ' -f3- | awk '{print $1 * 1024 * 1024};'", "r");
+  FILE *fp = popen("prtconf | grep 'Memory size:' | uniq | cut -d' ' -f3- | awk '{print $1 * 1024 * 1024};'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
