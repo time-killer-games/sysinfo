@@ -542,6 +542,22 @@ long long memory_totalram() {
     return info.totalram;
   }
   return -1;
+  #elif defined(__sun)
+  char buf[1024];
+  long long total = -1;
+  const char *result = nullptr;
+  FILE *fp = popen("kstat -n system_pages | grep physmem | awk -F ' ' '{printf $2}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    total = strtoll(str.c_str(), nullptr, 10);
+  }
+  return total;
   #else
   return -1;
   #endif
@@ -575,6 +591,22 @@ long long memory_availram() {
     return info.freeram;
   }
   return -1;
+  #elif defined(__sun)
+  char buf[1024];
+  long long avail = -1;
+  const char *result = nullptr;
+  FILE *fp = popen("kstat -n system_pages | grep freemem | awk -F ' ' '{printf $2}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    avail = strtoll(str.c_str(), nullptr, 10);
+  }
+  return avail;
   #else
   return -1;  
   #endif
@@ -588,7 +620,7 @@ long long memory_usedram() {
     return (long long)(statex.ullTotalPhys - statex.ullAvailPhys);
   }
   return -1;
-  #elif ((defined(__APPLE__) && defined(__MACH__)) ||defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  #elif ((defined(__APPLE__) && defined(__MACH__)) ||defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
   long long total = memory_totalram();
   long long avail = memory_availram();
   if (total != -1 && avail != -1) {
