@@ -28,6 +28,10 @@
 
 #include "system.hpp"
 
+#if defined(_WIN32)
+#undef main
+#endif
+
 using namespace ngs::sys;
 
 int main() {
