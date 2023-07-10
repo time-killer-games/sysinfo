@@ -90,8 +90,11 @@ static SDL_Window *window = nullptr;
 #if defined(CREATE_CONTEXT)
 static bool create_context() {
   if (!window) {
-    if (SDL_Init(SDL_INIT_VIDEO)) return false;
+    #if (defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+    setenv("SDL_VIDEODRIVER", "x11", 1);
     SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+    #endif
+    if (SDL_Init(SDL_INIT_VIDEO)) return false;
     #if (defined(__APPLE__) && defined(__MACH__))
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
