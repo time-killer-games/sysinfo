@@ -18,5 +18,5 @@ elif [ $(uname) = "OpenBSD" ]; then
 elif [ $(uname) = "SunOS" ]; then
   export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig && g++ main.cpp system.cpp -o sysinfo -std=c++17 -DCREATE_CONTEXT -static-libgcc `pkg-config --cflags --libs sdl2` -lGL; ./sysinfo;
 else
-  g++ main.cpp system.cpp -o sysinfo.exe -std=c++17 -DCREATE_CONTEXT -Iinclude -static-libgcc -static-libstdc++ -static `pkg-config --cflags --libs --static sdl2` -lws2_32 -ldxgi -lopengl32 -static; ./sysinfo.exe;
+  g++ main.cpp system.cpp -o sysinfo.exe -std=c++17 -DCREATE_CONTEXT -static-libgcc -static-libstdc++ -static `pkg-config --cflags --libs --static sdl2` -lws2_32 -ldxgi -lopengl32 -static; ./sysinfo.exe;
 fi
