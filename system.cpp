@@ -102,7 +102,7 @@ static bool create_context() {
     window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
     if (!window) return false;
     SDL_GLContext context = SDL_GL_GetCurrentContext();
-    if (!context) return false;
+    if (!context) context = SDL_GL_CreateContext(window);
     int err = SDL_GL_MakeCurrent(window, context);
     if (err) return false;
   }
