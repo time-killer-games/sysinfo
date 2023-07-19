@@ -43,7 +43,7 @@
 #if defined(_WIN32)
 #include <unordered_map>
 #endif
-#if (defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
+#if (!defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
 #include <SDL.h>
 #include <SDL_opengl.h>
 #endif
