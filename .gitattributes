@@ -1,5 +1,0 @@
-libEGL.dylib filter=lfs diff=lfs merge=lfs -text
-libGLESv2.dylib filter=lfs diff=lfs merge=lfs -text
-libc++_chrome.dylib filter=lfs diff=lfs merge=lfs -text
-libchrome_zlib.dylib filter=lfs diff=lfs merge=lfs -text
-libthird_party_abseil-cpp_absl.dylib filter=lfs diff=lfs merge=lfs -text
