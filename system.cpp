@@ -1166,13 +1166,19 @@ int cpu_numcores() {
   }
   return numcores;
   #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
-  int mib[2];
-  int physical_cpus = -1;
-  mib[0] = CTL_HW;
-  mib[1] = HW_NCPU;
-  std::size_t len = sizeof(int);
-  if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
-    numcores = physical_cpus;
+  // TODO: See if this code works on DragonFly, NetBSD, and OpenBSD; if not, correct code as needed.
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("sysctl -a | grep -i -o '[^ ]* core(s)' | awk 'FNR==1{print $1}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
   #elif defined(__linux__)
