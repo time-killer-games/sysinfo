@@ -30,10 +30,11 @@
 #endif
 #endif
 #include <algorithm>
-#include <string>
-#include <thread>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <thread>
 #include <regex>
 #include <cstdlib>
 #include <cstring>
