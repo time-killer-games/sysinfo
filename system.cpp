@@ -91,7 +91,7 @@
 
 namespace ngs::sys {
 
-/* Define CREATE_CONTEXT in your build scripts or Makefiles if 
+/* Define CREATE_CONTEXT in your build scripts or Makefiles if
 the calling process hasn't already done this on its own ... */
 #if defined(CREATE_CONTEXT)
 static SDL_Window *window = nullptr;
@@ -106,12 +106,8 @@ static bool create_context() {
     // TODO: Find a way to get this working when statically linking SDL2 and ANGLE; it only works with dynamic ANGLE ...
     // glGetString(...) will return nullptr whenever the ES context creation failed; a context is required for ANGLE ...
     SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     #endif
     window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
     if (!window) return false;
@@ -861,7 +857,13 @@ std::string gpu_vendor() {
   #if defined(CREATE_CONTEXT)
   if (!create_context()) return "";
   #endif
+  #if (defined(__APPLE__) && defined(__MACH__))
+  PFNGLGETSTRINGPROC glGetStringFunc = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
+  const char *result = (char *)glGetStringFunc(GL_VENDOR);
+  #else
+  // Also tried just this on macOS, still returns nullptr with static ANGLE:
   const char *result = (char *)glGetString(GL_VENDOR);
+  #endif
   std::string str;
   str = result ? result : "";
   #if (defined(__APPLE__) && defined(__MACH__))
@@ -883,7 +885,13 @@ std::string gpu_renderer() {
   #if defined(CREATE_CONTEXT)
   if (!create_context()) return "";
   #endif
+  #if (defined(__APPLE__) && defined(__MACH__))
+  PFNGLGETSTRINGPROC glGetStringFunc = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
+  const char *result = (char *)glGetStringFunc(GL_RENDERER);
+  #else
+  // Also tried just this on macOS, still returns nullptr with static ANGLE:
   const char *result = (char *)glGetString(GL_RENDERER);
+  #endif
   std::string str;
   str = result ? result : "";
   #if (defined(__APPLE__) && defined(__MACH__))
