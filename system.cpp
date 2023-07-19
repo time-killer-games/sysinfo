@@ -96,6 +96,9 @@ static bool create_context() {
     #endif
     if (SDL_Init(SDL_INIT_VIDEO)) return false;
     #if (defined(__APPLE__) && defined(__MACH__))
+    // TODO: Find a way to get this working when statically linking SDL2 and ANGLE; it only works with dynamic ANGLE ...
+    // glGetString(...) will return nullptr whenver the ES context creation fails, and an ES context is required for ANGLE ...
+    // SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1"); // This doesn't effect whether it works or not, oddly enough ...
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -855,6 +858,7 @@ std::string gpu_vendor() {
   std::string str;
   str = result ? result : "";
   #if (defined(__APPLE__) && defined(__MACH__))
+  // Trim out of string useless info showing I used Google's ANGLE libraries ...
   std::size_t openp = str.find_first_of("(");
   std::size_t closep = str.find_last_of(")");
   if (openp != std::string::npos && closep != std::string::npos) {
@@ -876,6 +880,7 @@ std::string gpu_renderer() {
   std::string str;
   str = result ? result : "";
   #if (defined(__APPLE__) && defined(__MACH__))
+  // Trim out of string useless info showing I used Google's ANGLE libraries ...
   std::size_t openp = str.find_first_of("(");
   std::size_t closep = str.find_last_of(")");
   if (openp != std::string::npos && closep != std::string::npos) {
