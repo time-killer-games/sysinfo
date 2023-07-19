@@ -1159,10 +1159,10 @@ int cpu_numcores() {
   }
   return numcores;
   #elif (defined(__APPLE__) && defined(__MACH__))
-  int physical_cpus = -1;
+  int logical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("hw.physicalcpu", &physical_cpus, &len, nullptr, 0)) {
-    numcores = physical_cpus;
+  if (!sysctlbyname("hw.logicalcpu", &logical_cpus, &len, nullptr, 0)) {
+    numcores = logical_cpus;
   }
   return numcores;
   #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
