@@ -41,7 +41,11 @@
 #include <cstdio>
 #include <cmath>
 #include <SDL.h>
+#if (defined(__APPLE__) && defined(__MACH__))
+#include <SDL_opengles2.h>
+#else
 #include <SDL_opengl.h>
+#endif
 #if defined(_WIN32)
 #include <winsock2.h>
 #include <windows.h>
@@ -100,8 +104,8 @@ static bool create_context() {
     if (SDL_Init(SDL_INIT_VIDEO)) return false;
     #if (defined(__APPLE__) && defined(__MACH__))
     // TODO: Find a way to get this working when statically linking SDL2 and ANGLE; it only works with dynamic ANGLE ...
-    // glGetString(...) will return nullptr whenever the ES context creation fails, and an ES context is required for ANGLE ...
-    // SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1"); // This doesn't effect whether it works or not, oddly enough ...
+    // glGetString(...) will return nullptr whenever the ES context creation failed; a context is required for ANGLE ...
+    SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
