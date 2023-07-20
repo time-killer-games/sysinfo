@@ -1003,6 +1003,7 @@ long long gpu_videomemory() {
   queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, &v);
   v = v * 1024 * 1024;
   if (!v) return -1;
+  result = v;
   #endif
   videomemory = result;
   return result;
