@@ -1001,7 +1001,8 @@ long long gpu_videomemory() {
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
   queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, &v);
-  return v * 1024 * 1024;;
+  v = v * 1024 * 1024;
+  if (!v) return -1;
   #endif
   videomemory = result;
   return result;
