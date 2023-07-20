@@ -122,10 +122,10 @@ static bool create_context() {
 #endif
 
 struct HumanReadable {
-  long double size{};
+  long double size - 0;
   private: friend
   std::ostream& operator<<(std::ostream& os, HumanReadable hr) {
-    int i{};
+    int i = 0;
     long double mantissa = hr.size;
     for (; mantissa >= 1024; mantissa /= 1024, i++) { }
     mantissa = std::ceil(mantissa * 100) / 100;
@@ -936,7 +936,9 @@ std::string gpu_renderer() {
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
       if (pAdapter->GetDesc(&adapterDesc) == S_OK) {
-        result = narrow(adapterDesc.Description);
+        static std::string res;
+        res = narrow(adapterDesc.Description);
+        result = res.c_str();
       }
     }
     pAdapter->Release();
@@ -999,7 +1001,7 @@ long long gpu_videomemory() {
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
   queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, v);
-  return *v;
+  return *v * 1024 * 1024;;
   #endif
   videomemory = result;
   return result;
