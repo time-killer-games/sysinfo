@@ -43,9 +43,13 @@
 #if defined(_WIN32)
 #include <unordered_map>
 #endif
-#if (!defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
+#if (defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
 #endif
 #if defined(_WIN32)
 #include <winsock2.h>
@@ -56,6 +60,7 @@
 #include <sys/sysinfo.h>
 #endif
 #if ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
+#endif
 #include <sys/types.h>
 #if (defined(__FreeBSD__) || defined(__DragonFly__))
 #include <unistd.h>
@@ -94,7 +99,7 @@ namespace ngs::sys {
 
 /* Define CREATE_CONTEXT in your build scripts or Makefiles if
 the calling process hasn't already done this on its own ... */
-#if (!defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
+#if (defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
 #if defined(CREATE_CONTEXT)
 static SDL_Window *window = nullptr;
 static bool create_context() {
@@ -990,18 +995,11 @@ long long gpu_videomemory() {
     pclose(fp);
   }
   #else
-  char buf[1024];
-  /* needs glxinfo installed via mesa-utils (Ubuntu), glx-utils (FreeBSD), or equivalent distro package */
-  FILE *fp = popen("glxinfo 2> /dev/null | grep 'Video memory: ' | uniq | awk -F ': ' '{print $2}'", "r");
-  if (fp) {
-    if (fgets(buf, sizeof(buf), fp)) {
-      buf[strlen(buf) - 1] = '\0';
-      if (strlen(buf)) {
-        result = strtoll(buf, nullptr, 10) * 1024 * 1024;
-      }
-    }
-    pclose(fp);
-  }
+  unsigned int v = 0;
+  PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
+  queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
+  queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, v);
+  return *v;
   #endif
   videomemory = result;
   return result;
