@@ -649,7 +649,9 @@ long long memory_totalvmem() {
     if (swaps) {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
-          total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
+          if (swaps[i].se_flags & SWF_ENABLE) {
+            total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
+          }
         }
       }
       free(swaps);
@@ -732,7 +734,9 @@ long long memory_availvmem() {
     if (swaps) {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
-          avail += (((swaps[i].se_nblks - swaps[i].se_inuse) / (1024 / block_s)) * 1024);
+          if (swaps[i].se_flags & SWF_ENABLE) {
+            avail += (((swaps[i].se_nblks - swaps[i].se_inuse) / (1024 / block_s)) * 1024);
+          }
         }
       }
       free(swaps);
@@ -815,7 +819,9 @@ long long memory_usedvmem() {
     if (swaps) {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
-          used += ((swaps[i].se_inuse / (1024 / block_s)) * 1024);
+          if (swaps[i].se_flags & SWF_ENABLE) {
+            used += ((swaps[i].se_inuse / (1024 / block_s)) * 1024);
+          }
         }
       }
       free(swaps);
