@@ -1,5 +1,6 @@
 #!/bin/sh
 cd "${0%/*}";
+xxd -i pci.ids > pci.ids.hpp;
 if [ $(uname) = "Darwin" ]; then
   clang++ main.cpp system.cpp -o sysinfo -std=c++17; ./sysinfo;
 elif [ $(uname) = "Linux" ]; then
