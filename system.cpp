@@ -1268,7 +1268,7 @@ std::string cpu_vendor() {
   #elif defined(__NetBSD__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("cat /proc/cpuinfo | grep 'vendor_id' | awk '{print 3}'", "r");
+  FILE *fp = popen("cat /proc/cpuinfo | grep 'vendor_id' | awk 'FNR==1{print 2}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
