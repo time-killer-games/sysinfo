@@ -114,7 +114,7 @@ static bool create_context() {
 #endif
 
 #if defined(_WIN32)
-std::string read_output(std::wstring cmd) {
+static std::string read_output(std::wstring cmd) {
   std::string result;
   bool proceed = true;
   HANDLE stdin_read = nullptr; HANDLE stdin_write = nullptr;
@@ -168,7 +168,7 @@ std::string read_output(std::wstring cmd) {
   return result;
 }
 
-std::string windows_version(std::string *product_name) {
+static std::string windows_version(std::string *product_name) {
   auto GetOSMajorVersionNumber = []() {
     const char *result = nullptr;
     char buf[1024];
