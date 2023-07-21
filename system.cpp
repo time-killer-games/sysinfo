@@ -1188,7 +1188,20 @@ std::string cpu_vendor() {
   }
   return "";
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
-
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("dmesg | awk '/CPU: /{p++;if(p==0){next}}p' | awk -F'Origin=\"' 'FNR==2{print $0}' | sed 's/.*Origin=\"//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}' | awk '{print substr($0, 1, length($0)-1)}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str;
+  }
+  return "";
   #elif defined(__NetBSD__)
 
   #elif defined(__OpenBSD__)
