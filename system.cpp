@@ -388,6 +388,7 @@ std::string utsname_release() {
 std::string utsname_version() {
   #if !defined(_WIN32)
   #if !defined(__sun)
+  #if !defined(__DragonFly__)
   const char *result = nullptr;
   struct utsname name;
   if (!uname(&name))
@@ -395,6 +396,22 @@ std::string utsname_version() {
   std::string str;
   str = result ? result : "";
   return str;
+  #else
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("uname -v", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str;
+  }
+  return "";
+  #endif
   #else
   std::string res;
   long count = sysinfo(SI_VERSION, nullptr, 0);
