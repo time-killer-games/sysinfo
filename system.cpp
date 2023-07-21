@@ -1238,7 +1238,7 @@ std::string cpu_vendor() {
   #elif defined(__FreeBSD__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("dmesg | awk '/CPU: /{p++;if(p==0){next}}p' | awk -F'Origin=\"' 'FNR==2{print $0}' | sed 's/.*Origin=\"//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}' | awk '{print substr($0, 1, length($0)-1)}'", "r");
+  FILE *fp = popen("dmesg | awk '/CPU: /{p++;if(p==0){next}}p' | awk -F'Origin=\"' 'FNR==2{print $0}' | sed 's/.*Origin=\"//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}' | awk '{print substr($0, 1, length($0) - 1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1253,7 +1253,7 @@ std::string cpu_vendor() {
   #elif defined(__DragonFly__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("dmesg | awk '/CPU: /{p++;if(p==0){next}}p' | awk -F'Origin = \"' 'FNR==2{print $0}' | sed 's/.*Origin = \"//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}' | awk '{print substr($0, 1, length($0)-1)}'", "r");
+  FILE *fp = popen("dmesg | awk '/CPU: /{p++;if(p==0){next}}p' | awk -F'Origin = \"' 'FNR==2{print $0}' | sed 's/.*Origin = \"//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}' | awk '{print substr($0, 1, length($0) - 1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1298,7 +1298,7 @@ std::string cpu_vendor() {
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("psrinfo -v -p | awk 'FNR==2{print substr($2,2)}'", "r");
+  FILE *fp = popen("psrinfo -v -p | awk 'FNR==2{print substr($2, 2)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1445,7 +1445,7 @@ int cpu_numcores() {
   #elif defined(__DragonFly__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($0)-1)}'", "r");
+  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($0) - 1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1460,7 +1460,7 @@ int cpu_numcores() {
   #elif defined(__NetBSD__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("dmesg | grep ', core ' | awk '{print substr($6, 0, length($0)-1)}' | tail -1", "r");
+  FILE *fp = popen("dmesg | grep ', core ' | awk '{print substr($6, 0, length($0) - 1)}' | tail -1", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
