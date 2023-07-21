@@ -1460,7 +1460,7 @@ int cpu_numcores() {
   #elif defined(__NetBSD__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("/sbin/dmesg | grep ', core ' | tail -1 | awk '{print substr($6, 0, length($6) - 1)}'", "r");
+  FILE *fp = popen("/sbin/dmesg | grep ', core ' | tail -1 | awk '{print substr($7, 0, length($7) - 1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
