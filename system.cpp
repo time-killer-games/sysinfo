@@ -1445,7 +1445,7 @@ int cpu_numcores() {
   #elif defined(__DragonFly__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6,0,1)}'", "r");
+  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($0)-1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1457,7 +1457,22 @@ int cpu_numcores() {
     numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
-  #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+  #elif defined(__NetBSD__)
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("dmesg | grep ', core ' | awk '{print substr($6, 0, length($0)-1)}' | tail -1", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    numcores = (int)(cpu_numcpus() / (strtol(str.c_str(), nullptr, 10) + 1));
+  }
+  return numcores;
+  #elif defined(__OpenBSD__)
   int mib[2];
   mib[0] = CTL_HW;
   mib[1] = HW_NCPUONLINE;
