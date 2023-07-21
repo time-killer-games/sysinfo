@@ -707,6 +707,9 @@ long long memory_totalvmem() {
   return -1;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   long long total = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
   int nswap = swapctl(SWAP_NSWAP, nullptr, 0);
   if (!nswap) return 0;
   if (nswap > 0) {
@@ -715,7 +718,7 @@ long long memory_totalvmem() {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
           if (swaps[i].se_flags & SWF_ENABLE) {
-            total += ((swaps[i].se_nblks / (1024 / DEV_BSIZE)) * 1024);
+            total += ((swaps[i].se_nblks / (1024 / block_s)) * 1024);
           }
         }
       }
@@ -789,6 +792,9 @@ long long memory_availvmem() {
   return -1;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   long long avail = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
   int nswap = swapctl(SWAP_NSWAP, nullptr, 0);
   if (!nswap) return 0;
   if (nswap > 0) {
@@ -797,7 +803,7 @@ long long memory_availvmem() {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
           if (swaps[i].se_flags & SWF_ENABLE) {
-            avail += (((swaps[i].se_nblks - swaps[i].se_inuse) / (1024 / DEV_BSIZE)) * 1024);
+            avail += (((swaps[i].se_nblks - swaps[i].se_inuse) / (1024 / block_s)) * 1024);
           }
         }
       }
@@ -871,6 +877,9 @@ long long memory_usedvmem() {
   return -1;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   long long used = 0;
+  long block_s = 0;
+  int header_len = 0;
+  getbsize(&header_len, &block_s);
   int nswap = swapctl(SWAP_NSWAP, nullptr, 0);
   if (!nswap) return 0;
   if (nswap > 0) {
@@ -879,7 +888,7 @@ long long memory_usedvmem() {
       if (swapctl(SWAP_STATS, swaps, nswap) > 0) {
         for (int i = 0; i < nswap; i++) {
           if (swaps[i].se_flags & SWF_ENABLE) {
-            used += ((swaps[i].se_inuse / (1024 / DEV_BSIZE)) * 1024);
+            used += ((swaps[i].se_inuse / (1024 / block_s)) * 1024);
           }
         }
       }
