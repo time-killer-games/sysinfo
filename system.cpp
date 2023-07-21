@@ -265,7 +265,7 @@ struct HumanReadable {
     }
     mantissa = std::ceil(mantissa * 100) / 100;
     os << mantissa << " " << "BKMGTPE"[i];
-    return i == 0 ? os : os << "B";
+    return !i ? os : os << "B";
   }
 };
 
@@ -923,8 +923,8 @@ unsigned int VendorId = 0;
 std::unordered_map<unsigned int, std::string> VendorNameById;
 std::unordered_map<unsigned int, std::string> DeviceNameById;
 std::string GetVendorOrDeviceNameById(unsigned int Id, int VendorOrDevice) {
-  if (VendorNameById.find(Id) != VendorNameById.end() && VendorOrDevice == 0) return VendorNameById[Id];
-  if (DeviceNameById.find(Id) != DeviceNameById.end() && VendorOrDevice != 0) return DeviceNameById[Id];
+  if (VendorNameById.find(Id) != VendorNameById.end() && VendorOrDevice) return VendorNameById[Id];
+  if (DeviceNameById.find(Id) != DeviceNameById.end() && !VendorOrDevice) return DeviceNameById[Id];
   std::string str(pci_ids, pci_ids + sizeof(pci_ids) / sizeof(pci_ids[0]));
   str = std::regex_replace(str, std::regex("\r"), "");
   std::vector<std::string> vec = string_split(str, '\n');
