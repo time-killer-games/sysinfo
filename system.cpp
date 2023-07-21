@@ -402,9 +402,8 @@ std::string utsname_version() {
   return res;
   #endif
   #else
-  std::string result = read_output(L"ver");
+  std::string result = read_output(L"cmd /c ver");
   if (!result.empty()) {
-    result = std::regex_replace(result, std::regex(" "), "");
     result = std::regex_replace(result, std::regex("\r"), "");
     result = std::regex_replace(result, std::regex("\n"), "");
     static std::string res;
