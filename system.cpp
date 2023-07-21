@@ -1388,10 +1388,25 @@ int cpu_numcores() {
     numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
-  #elif (defined(__FreeBSD__) || defined(__DragonFly__))
+  #elif defined(__FreeBSD__)
   char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("sysctl -a | grep -i -o '[^ ]* core(s)' | awk 'FNR==1{print $1}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    numcores = (int)strtol(str.c_str(), nullptr, 10);
+  }
+  return numcores;
+  #elif defined(__DragonFly__)
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6,0,1)}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
