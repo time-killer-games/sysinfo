@@ -61,13 +61,11 @@
 #if ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
 #include <sys/types.h>
 #if (defined(__FreeBSD__) || defined(__DragonFly__))
-#include <unistd.h>
 #include <fcntl.h>
 #include <kvm.h>
 #elif (defined(__NetBSD__) || defined(__OpenBSD__))
 #include <sys/param.h>
 #include <sys/swap.h>
-#include <unistd.h>
 #endif
 #endif
 #if !defined(__sun)
@@ -78,8 +76,8 @@
 #else
 #include <sys/systeminfo.h>
 #include <sys/swap.h>
-#include <unistd.h>
 #endif
+#include <unistd.h>
 #endif
 #if (defined(_WIN32) && defined(_MSC_VER))
 #pragma comment(lib, "ws2_32.lib")
