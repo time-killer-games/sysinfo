@@ -1323,10 +1323,10 @@ int cpu_numcpus() {
   SYSTEM_INFO sysinfo;
   GetSystemInfo(&sysinfo);
   numcpus = sysinfo.dwNumberOfProcessors;
-  return numcores;
+  return numcpus;
   #else
-  numcores = (int)sysconf(_SC_NPROCESSORS_ONLN);
-  return numcores;
+  numcpus = (int)sysconf(_SC_NPROCESSORS_ONLN);
+  return numcpus;
   #endif
 }
 
