@@ -411,6 +411,7 @@ std::string utsname_version() {
     res = result;
 	return res;
   }
+  return "";
   #endif
 }
 
