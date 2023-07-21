@@ -1192,13 +1192,18 @@ std::string cpu_vendor() {
   #elif defined(__NetBSD__)
 
   #elif defined(__OpenBSD__)
-  int mib[2];
   char buf[1024];
-  mib[0] = CTL_MACHDEP;
-  mib[1] = CPU_CPUVENDOR;
-  std::size_t len = sizeof(buf);
-  if (!sysctl(mib, 2, buf, &len, nullptr, 0)) {
-    return strlen(buf) ? buf : "";
+  const char *result = nullptr;
+  FILE *fp = popen("sysctl -n machdep.cpuvendor", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str;
   }
   return "";
   #elif defined(__sun)
