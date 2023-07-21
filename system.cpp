@@ -1257,7 +1257,20 @@ std::string cpu_vendor() {
   }
   return "";
   #elif defined(__NetBSD__)
-
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("cat /proc/cpuinfo | grep 'vendor_id' | awk '{print 3}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = result ? result : "";
+    return str;
+  }
+  return "";
   #elif defined(__OpenBSD__)
   char buf[1024];
   const char *result = nullptr;
