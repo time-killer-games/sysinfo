@@ -254,7 +254,15 @@ struct HumanReadable {
   std::ostream& operator<<(std::ostream& os, HumanReadable hr) {
     int i = 0;
     long double mantissa = hr.size;
-    for (; mantissa >= 1024; mantissa /= 1024, i++) { }
+    for (; mantissa >= 1024; mantissa /= 1024, i++) {
+      #if defined(_WIN32)
+      MSG msg;
+      while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+      }
+      #endif
+    }
     mantissa = std::ceil(mantissa * 100) / 100;
     os << mantissa << " " << "BKMGTPE"[i];
     return i == 0 ? os : os << "B";
@@ -898,6 +906,13 @@ std::vector<std::string> string_split(std::string str, char delimiter) {
   std::stringstream sstr(str);
   std::string tmp;
   while (std::getline(sstr, tmp, delimiter)) {
+    #if defined(_WIN32)
+    MSG msg;
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+    #endif
     vec.push_back(tmp);
   }
   return vec;
@@ -914,6 +929,13 @@ std::string GetVendorOrDeviceNameById(unsigned int Id, int VendorOrDevice) {
   str = std::regex_replace(str, std::regex("\r"), "");
   std::vector<std::string> vec = string_split(str, '\n');
   for (std::size_t i = 0; i < vec.size(); i++) {
+    #if defined(_WIN32)
+    MSG msg;
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+    #endif
     if (vec[i].empty() || (!vec[i].empty() && vec[i][0] == '#')) {
       continue;
     }
