@@ -121,10 +121,10 @@ std::string read_output(std::wstring cmd) {
   HANDLE stdout_read = nullptr; HANDLE stdout_write = nullptr;
   SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, true };
   proceed = CreatePipe(&stdin_read, &stdin_write, &sa, 0);
-  if (!proceed) return -1;
+  if (!proceed) return "";
   SetHandleInformation(stdin_write, HANDLE_FLAG_INHERIT, 0);
   proceed = CreatePipe(&stdout_read, &stdout_write, &sa, 0);
-  if (!proceed) return -1;
+  if (!proceed) return "";
   STARTUPINFOW si;
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(STARTUPINFOW);
