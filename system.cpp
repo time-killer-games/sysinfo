@@ -1388,7 +1388,7 @@ int cpu_numcores() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)strtol(str.c_str(), nullptr, 10);
+    numcores = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcpus());
   }
   return numcores;
   #elif defined(__NetBSD__)
@@ -1403,7 +1403,7 @@ int cpu_numcores() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)((strtol(str.c_str(), nullptr, 10) + 1) / cpu_numcpus());
+    numcores = (int)(strtol(str.c_str(), nullptr, 10) + 1);
   }
   return numcores;
   #elif defined(__OpenBSD__)
