@@ -1010,7 +1010,7 @@ std::string gpu_vendor() {
   #endif
   #if defined(__sun)
   char buf[1024];
-  FILE *fp = popen("prtconf | awk '/display/{p++;if(p==1){next}}p' | awk -F'pci' 'NR==2{print $0}' | sed 's/.*pci//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}'", "r");
+  FILE *fp = popen("prtconf |  awk '/display/{p=3} p > 0 {print $0; p--}'| awk -F'pci' 'NR==3{print $0}' | sed 's/.*pci//g' | awk -F' ' '{print $1}' | awk -F',' '{print $1}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1100,7 +1100,7 @@ std::string gpu_renderer() {
   #endif
   #if defined(__sun)
   char buf[1024];
-  FILE *fp = popen("prtconf | awk '/display/{p++;if(p==1){next}}p' | awk -F'pci' 'NR==2{print $0}' | sed 's/.*pci//g' | awk -F' ' '{print $1}' | awk -F',' '{print $2}'", "r");
+  FILE *fp = popen("prtconf | awk '/display/{p=3} p > 0 {print $0; p--}' | awk -F'pci' 'NR==3{print $0}' | sed 's/.*pci//g' | awk -F' ' '{print $1}' | awk -F',' '{print $2}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
