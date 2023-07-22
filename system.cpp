@@ -1340,10 +1340,10 @@ int cpu_numcores() {
   }
   return numcores;
   #elif (defined(__APPLE__) && defined(__MACH__))
-  int logical_cpus = -1;
+  int physical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("machdep.cpu.core_count", &logical_cpus, &len, nullptr, 0)) {
-    numcores = (logical_cpus / cpu_numcpus());
+  if (!sysctlbyname("machdep.cpu.core_count", &physical_cpus, &len, nullptr, 0)) {
+    numcores = physical_cpus;
   }
   return numcores;
   #elif defined(__linux__)
@@ -1410,10 +1410,10 @@ int cpu_numcores() {
   int mib[2];
   mib[0] = CTL_HW;
   mib[1] = HW_NCPUONLINE;
-  int logical_cpus = -1;
+  int physical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctl(mib, 2, &logical_cpus, &len, nullptr, 0)) {
-    numcores = logical_cpus;
+  if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
+    numcores = physical_cpus;
   }
   return numcores;
   #elif defined(__sun)
@@ -1444,10 +1444,10 @@ int cpu_numcpus() {
   numcpus = sysinfo.dwNumberOfProcessors;
   return numcpus;
   #elif (defined(__APPLE__) && defined(__MACH__))
-  int physical_cpus = -1;
+  int logical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("machdep.cpu.thread_count", &physical_cpus, &len, nullptr, 0)) {
-    numcpus = physical_cpus;
+  if (!sysctlbyname("machdep.cpu.thread_count", &logical_cpus, &len, nullptr, 0)) {
+    numcpus = logical_cpus;
   }
   return numcpus;
   #elif defined(__linux__)
@@ -1466,20 +1466,20 @@ int cpu_numcpus() {
   }
   return numcpus;
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
-  int physical_cpus = -1;
+  int logical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("hw.ncpu", &physical_cpus, &len, nullptr, 0)) {
-    numcpus = physical_cpus;
+  if (!sysctlbyname("hw.ncpu", &logical_cpus, &len, nullptr, 0)) {
+    numcpus = logical_cpus;
   }
   return numcpus;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   mib[0] = CTL_HW;
   mib[1] = HW_NCPU;
-  int physical_cpus = -1;
+  int logical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
-    numcpus = physical_cpus;
+  if (!sysctl(mib, 2, &logical_cpus, &len, nullptr, 0)) {
+    numcpus = logical_cpus;
   }
   return numcpus;
   #elif defined(__sun)
