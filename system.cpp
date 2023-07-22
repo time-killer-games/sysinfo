@@ -1349,7 +1349,7 @@ int cpu_numcores() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'", "r");
+  FILE *fp = popen("cat /proc/cpuinfo | grep 'physical id' | sort | uniq | wc -l", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1445,7 +1445,7 @@ int cpu_numcpus() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Thread(s) per core:' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'", "r");
+  FILE *fp = popen("cat /proc/cpuinfo | grep 'cpu cores' | sort | uniq | wc -l", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1454,7 +1454,7 @@ int cpu_numcpus() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcpus = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcores());
+    numcpus = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcpus;
   #elif defined(__FreeBSD__)
