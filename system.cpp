@@ -446,7 +446,7 @@ std::string utsname_codename() {
   return product_name;
   #elif (defined(__APPLE__) && defined(__MACH__))
   std::string result;
-  FILE *fp = popen("echo $(sw_vers | grep 'ProductName:' | uniq | awk '{$1=$1};1' && sw_vers | grep 'ProductVersion:' | uniq | awk '{$1=$1};1')", "r");
+  FILE *fp = popen("echo $(sw_vers | grep 'ProductName:' | uniq | awk 'FNR==1{$1=$1;print}' && sw_vers | grep 'ProductVersion:' | uniq | awk 'FNR==1{$1=$1;print}')", "r");
   if (fp) {
     char buf[1024];
     if (fgets(buf, sizeof(buf), fp)) {
@@ -506,7 +506,7 @@ std::string utsname_codename() {
   char *buf = nullptr;
   std::size_t len = 0;
   std::string buffer;
-  FILE *file = popen("cat /etc/release | awk '{$1=$1};1'", "r");
+  FILE *file = popen("cat /etc/release | awk 'FNR==1{$1=$1;print}'", "r");
   if (file) {
     if (getline(&buf, &len, file) != -1) {
       buffer = buf;
@@ -1054,7 +1054,7 @@ std::string gpu_vendor() {
   }
   if (result.empty()) {
     char buf[1024];
-    FILE *fp = popen("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' '{$1=$1};1' | awk '{$1=$1};1'", "r");
+    FILE *fp = popen("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' 'FNR==1{$1=$1;print}' | awk 'FNR==1{$1=$1;print}'", "r");
     if (fp) {
       if (fgets(buf, sizeof(buf), fp)) {
         buf[strlen(buf) - 1] = '\0';
@@ -1144,7 +1144,7 @@ std::string gpu_renderer() {
   }
   if (result.empty()) {
     char buf[1024];
-    FILE *fp = popen("system_profiler SPDisplaysDataType | grep -i 'Chipset Model: ' | uniq | awk -F 'Chipset Model: ' '{$1=$1};1' | awk '{$1=$1};1'", "r");
+    FILE *fp = popen("system_profiler SPDisplaysDataType | grep -i 'Chipset Model: ' | uniq | awk -F 'Chipset Model: ' 'FNR==1{$1=$1;print}' | awk 'FNR==1{$1=$1;print}'", "r");
     if (fp) {
       if (fgets(buf, sizeof(buf), fp)) {
         buf[strlen(buf) - 1] = '\0';
@@ -1223,7 +1223,7 @@ std::string cpu_vendor() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Vendor ID:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'Vendor ID:' | uniq | cut -d' ' -f3- | awk 'FNR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1335,7 +1335,7 @@ std::string cpu_brand() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Model name:' | uniq | cut -d' ' -f3- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'Model name:' | uniq | cut -d' ' -f3- | awk 'FNR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1360,7 +1360,7 @@ std::string cpu_brand() {
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("psrinfo -v -p | awk 'FNR==3{print}' | awk '{$1=$1};1''", "r");
+  FILE *fp = popen("psrinfo -v -p | awk 'FNR==3{print}' | awk 'FNR==1{$1=$1;print}''", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1403,7 +1403,7 @@ int cpu_numcores() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'Core(s) per socket:' | uniq | cut -d' ' -f4- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'Core(s) per socket:' | uniq | cut -d' ' -f4- | awk 'FNR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1413,7 +1413,7 @@ int cpu_numcores() {
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
     if (str == "-1") {
-      FILE *fp = popen("lscpu | grep 'Core(s) per cluster:' | uniq | cut -d' ' -f4- | awk '{$1=$1};1'", "r");
+      FILE *fp = popen("lscpu | grep 'Core(s) per cluster:' | uniq | cut -d' ' -f4- | awk 'FNR==1{$1=$1;print}'", "r");
       if (fp) {
         if (fgets(buf, sizeof(buf), fp)) {
           buf[strlen(buf) - 1] = '\0';
@@ -1519,7 +1519,7 @@ int cpu_numcpus() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f4- | awk '{$1=$1};1'", "r");
+  FILE *fp = popen("lscpu | grep 'CPU(s):' | uniq | cut -d' ' -f4- | awk 'FNR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
