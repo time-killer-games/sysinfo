@@ -1342,7 +1342,7 @@ int cpu_numcores() {
   #elif (defined(__APPLE__) && defined(__MACH__))
   int logical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("machdep.cpu.thread_count", &logical_cpus, &len, nullptr, 0)) {
+  if (!sysctlbyname("machdep.cpu.core_count", &logical_cpus, &len, nullptr, 0)) {
     numcores = (logical_cpus / cpu_numcpus());
   }
   return numcores;
@@ -1358,7 +1358,7 @@ int cpu_numcores() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)strtol(str.c_str(), nullptr, 10);
+    numcores = ((int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
   #elif defined(__FreeBSD__)
@@ -1446,7 +1446,7 @@ int cpu_numcpus() {
   #elif (defined(__APPLE__) && defined(__MACH__))
   int physical_cpus = -1;
   std::size_t len = sizeof(int);
-  if (!sysctlbyname("machdep.cpu.core_count", &physical_cpus, &len, nullptr, 0)) {
+  if (!sysctlbyname("machdep.cpu.thread_count", &physical_cpus, &len, nullptr, 0)) {
     numcpus = physical_cpus;
   }
   return numcpus;
