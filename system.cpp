@@ -1428,14 +1428,15 @@ int cpu_numcores() {
   #endif
 }
 
-static int numcpus = -1;
 int cpu_numcpus() {
   #if defined(_WIN32)
+  int numcpus = -1;
   SYSTEM_INFO sysinfo;
   GetSystemInfo(&sysinfo);
   numcpus = sysinfo.dwNumberOfProcessors;
   return numcpus;
   #elif (defined(__APPLE__) && defined(__MACH__))
+  int numcpus = -1;
   int logical_cpus = -1;
   std::size_t len = sizeof(int);
   if (!sysctlbyname("machdep.cpu.thread_count", &logical_cpus, &len, nullptr, 0)) {
@@ -1443,9 +1444,10 @@ int cpu_numcpus() {
   }
   return numcpus;
   #elif defined(__linux__)
+  int numcpus = -1;
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("cat /proc/cpuinfo | grep 'cpu cores' | sort | uniq | wc -l", "r");
+  FILE *fp = popen("lscpu | grep 'Thread(s) per core:' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
@@ -1454,10 +1456,11 @@ int cpu_numcpus() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcpus = (int)strtol(str.c_str(), nullptr, 10);
+    numcpus = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcores());
   }
   return numcpus;
   #elif defined(__FreeBSD__)
+  int numcpus = -1;
   int logical_cpus = -1;
   std::size_t len = sizeof(int);
   if (!sysctlbyname("hw.ncpu", &logical_cpus, &len, nullptr, 0)) {
@@ -1465,6 +1468,7 @@ int cpu_numcpus() {
   }
   return numcpus;
   #elif defined(__DragonFly__)
+  int numcpus = -1;
   char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'", "r");
@@ -1480,6 +1484,7 @@ int cpu_numcpus() {
   }
   return numcpus;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+  int numcpus = -1;
   int mib[2];
   mib[0] = CTL_HW;
   mib[1] = HW_NCPU;
@@ -1490,6 +1495,7 @@ int cpu_numcpus() {
   }
   return numcpus;
   #elif defined(__sun)
+  int numcpus = -1;
   char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("psrinfo -v -p | grep 'The physical processor has ' | awk '{print $5}'", "r");
