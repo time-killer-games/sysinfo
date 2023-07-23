@@ -1377,10 +1377,19 @@ int cpu_numcores() {
   }
   return numcores;
   #elif defined(__DragonFly__)
-  int physical_cpus = -1;
-  std::size_t len = sizeof(int);
-  if (!sysctlbyname("hw.ncpu", &physical_cpus, &len, nullptr, 0)) {
-    numcores = physical_cpus;
+  int numcores = -1;
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
   #elif defined(__NetBSD__)
@@ -1459,28 +1468,12 @@ int cpu_numcpus() {
     numcpus = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcores());
   }
   return numcpus;
-  #elif defined(__FreeBSD__)
+  #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   int numcpus = -1;
   int logical_cpus = -1;
   std::size_t len = sizeof(int);
   if (!sysctlbyname("hw.ncpu", &logical_cpus, &len, nullptr, 0)) {
     numcpus = logical_cpus;
-  }
-  return numcpus;
-  #elif defined(__DragonFly__)
-  int numcpus = -1;
-  char buf[1024];
-  const char *result = nullptr;
-  FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'", "r");
-  if (fp) {
-    if (fgets(buf, sizeof(buf), fp)) {
-      buf[strlen(buf) - 1] = '\0';
-      result = buf;
-    }
-    pclose(fp);
-    static std::string str;
-    str = (result && strlen(result)) ? result : "-1";
-    numcpus = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcores());
   }
   return numcpus;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
