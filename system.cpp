@@ -1445,20 +1445,24 @@ int cpu_numcores() {
         mNumCores = mNumLogCpus = 1;
       }
     }
-  } else if (cpuvendor == "AuthenticAMD") {
-    if (HFS >= 1) {
-      mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
-      if (CPUID(0x80000000, 0).EAX() >= 8) {
-        mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
-      }
-    }
-    if (mIsHTT) {
-      if (!(mNumCores > 1)) {
-        mNumCores = 1;
-        mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
-      }
+  } else if (cpuvendor == "AuthenticAMD" || cpuvendor == "AMDisbetter!") {
+    int numcpus = cpu_numcpus();
+    std::uint32_t numsiblings = 1 + ((CPUID(0x8000001e, 0).EBX() >> 8) & 0xff);
+    if (numcpus > 0 && numsiblings > 0) {
+      mNumCores = numcpus / numsiblings;
     } else {
-      mNumCores = mNumLogCpus = 1;
+      if (HFS >= 1) {
+        if (CPUID(0x80000000, 0).EAX() >= 8) {
+          mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
+        }
+      }
+      if (mIsHTT) {
+        if (mNumCores < 1) {
+          mNumCores = 1;
+        }
+      } else {
+        mNumCores = 1;
+      }
     }
   }
   if (mNumCores > 0) {
