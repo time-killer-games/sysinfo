@@ -1358,7 +1358,7 @@ int cpu_numcores() {
     pclose(fp);
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)strtol(str.c_str(), nullptr, 10);
+    numcores = (int)(cpu_numcpus() / strtol(str.c_str(), nullptr, 10));
   }
   return numcores;
   #elif defined(__FreeBSD__)
