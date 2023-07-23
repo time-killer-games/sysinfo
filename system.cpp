@@ -1460,7 +1460,7 @@ int cpu_numcores() {
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("x=`kstat cpu_info | grep 'pkg_core_id' | uniq | wc -l | awk '{print $1}'` y=`psrinfo -p` z=$((x / y)) echo $z", "r");
+  FILE *fp = popen("echo `expr $(kstat cpu_info | grep 'pkg_core_id' | uniq | wc -l | awk '{print $1}') / $(psrinfo -p)`", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
