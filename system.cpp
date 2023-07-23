@@ -1421,13 +1421,14 @@ int cpu_numcores() {
       for (int lvl = 0; lvl < MAX_INTEL_TOP_LVL; lvl++) {
         CPUID cpuID4(0x0B, lvl);
         std::uint32_t currLevel = (LVL_TYPE & cpuID4.ECX()) >> 8;
-        switch(currLevel) {
+        switch (currLevel) {
           case 0x01: mNumSMT = LVL_CORES & cpuID4.EBX(); break;
           case 0x02: mNumLogCpus = LVL_CORES & cpuID4.EBX(); break;
           default: break;
         }
       }
       mNumCores = mNumLogCpus / mNumSMT;
+      mIsHTT = mNumSMT > 1;
     } else {
       if (HFS >= 1) {
         mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
