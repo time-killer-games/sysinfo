@@ -1396,12 +1396,8 @@ int cpu_numcores() {
   auto cpuID = [](unsigned i, unsigned regs[4]) {
     asm volatile("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (i), "c" (0));
   }
-  char vendor[12];
-  cpuID(0, regs);
-  ((unsigned *)vendor)[0] = regs[1];
-  ((unsigned *)vendor)[1] = regs[3];
-  ((unsigned *)vendor)[2] = regs[2];
-  string cpuVendor = string(vendor, 12);
+  unsigned regs[4];
+  std::string cpuVendor = cpu_vendor();
   if (cpuVendor == "GenuineIntel") {
     cpuID(4, regs);
     numcores = (int)(((regs[0] >> 26) & 0x3f) + 1);
