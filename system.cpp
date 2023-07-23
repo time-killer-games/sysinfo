@@ -1374,6 +1374,7 @@ int cpu_numcores() {
     static std::string str;
     str = (result && strlen(result)) ? result : "-1";
     numcores = (int)strtol(str.c_str(), nullptr, 10);
+    numcores = ((!numcores) ? cpu_cumcpus() : numcores);
   }
   return numcores;
   #elif defined(__DragonFly__)
