@@ -1434,15 +1434,7 @@ int cpu_numcpus() {
     numcpus = ((int)strtol(str.c_str(), nullptr, 10) * cpu_numcores());
   }
   return numcpus;
-  #elif (defined(__FreeBSD__) || defined(__DragonFly__))
-  int numcpus = -1;
-  int logical_cpus = -1;
-  std::size_t len = sizeof(int);
-  if (!sysctlbyname("hw.ncpu", &logical_cpus, &len, nullptr, 0)) {
-    numcpus = logical_cpus;
-  }
-  return numcpus;
-  #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+  #elif (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
   int numcpus = -1;
   int mib[2];
   mib[0] = CTL_HW;
