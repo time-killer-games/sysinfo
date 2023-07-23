@@ -1458,8 +1458,8 @@ int cpu_numcores() {
       mNumCores = mNumLogCpus = 1;
     }
   }
-  if (nNumCores > 0) {
-    numcores = nNumCores;
+  if (mNumCores > 0) {
+    numcores = mNumCores;
   }
   return numcores;
   #elif defined(__sun)
