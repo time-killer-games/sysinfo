@@ -1398,6 +1398,21 @@ int cpu_numcores() {
   #elif defined(__OpenBSD__)
   // Unimplemented OS-level ...
   return -1;
+  #elif defined(__sun)
+  char buf[1024];
+  const char *result = nullptr;
+  FILE *fp = popen("psrinfo -p", "r");
+  if (fp) {
+    if (fgets(buf, sizeof(buf), fp)) {
+      buf[strlen(buf) - 1] = '\0';
+      result = buf;
+    }
+    pclose(fp);
+    static std::string str;
+    str = (result && strlen(result)) ? result : "-1";
+    numcores = (int)strtol(str.c_str(), nullptr, 10);
+  }
+  return numcores;
   #else
   return -1;
   #endif
