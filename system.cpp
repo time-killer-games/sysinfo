@@ -1399,10 +1399,10 @@ int cpu_numcores() {
     explicit CPUID(unsigned funcId, unsigned subFuncId) {
       asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (funcId), "c" (subFuncId));
     }
-    const std::uint32_t &EAX() const {return regs[0];}
-    const std::uint32_t &EBX() const {return regs[1];}
-    const std::uint32_t &ECX() const {return regs[2];}
-    const std::uint32_t &EDX() const {return regs[3];}
+    const std::uint32_t &EAX() const { return regs[0]; }
+    const std::uint32_t &EBX() const { return regs[1]; }
+    const std::uint32_t &ECX() const { return regs[2]; }
+    const std::uint32_t &EDX() const { return regs[3]; }
   };
   static const std::uint32_t AVX_POS = 0x10000000;
   static const std::uint32_t LVL_NUM = 0x000000FF;
@@ -1429,34 +1429,33 @@ int cpu_numcores() {
       }
       mNumCores = mNumLogCpus / mNumSMT;
     } else {
-        if (HFS >= 1) {
-          mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
-          if (HFS >= 4) {
-            mNumCores = 1 + (CPUID(4, 0).EAX() >> 26) & 0x3F;
-          }
-        }
-        if (mIsHTT) {
-          if (!(mNumCores>1)) {
-            mNumCores = 1;
-            mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
-          }
-        } else {
-          mNumCores = mNumLogCpus = 1;
-        }
-      }
-    } else if (cpuvendor == "AuthenticAMD") {
       if (HFS >= 1) {
-        if (CPUID(0x80000000, 0).EAX() >= 8) {
-          mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
+        mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
+        if (HFS >= 4) {
+          mNumCores = 1 + (CPUID(4, 0).EAX() >> 26) & 0x3F;
         }
       }
       if (mIsHTT) {
-        if (!(mNumCores > 1)) {
+        if (!(mNumCores>1)) {
           mNumCores = 1;
+          mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
         }
       } else {
         mNumCores = mNumLogCpus = 1;
       }
+    }
+  } else if (cpuvendor == "AuthenticAMD") {
+    if (HFS >= 1) {
+      if (CPUID(0x80000000, 0).EAX() >= 8) {
+        mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
+      }
+    }
+    if (mIsHTT) {
+      if (!(mNumCores > 1)) {
+        mNumCores = 1;
+      }
+    } else {
+      mNumCores = mNumLogCpus = 1;
     }
   }
   if (nNumCores > 0) {
