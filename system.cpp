@@ -1393,7 +1393,6 @@ int cpu_numcores() {
   }
   return numcores;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
-  #define MAX_INTEL_TOP_LVL 4
   class CPUID {
     unsigned regs[4];
     public:
@@ -1407,7 +1406,6 @@ int cpu_numcores() {
   };
   static const unsigned AVX_POS = 0x10000000;
   static const unsigned LVL_NUM = 0x000000FF;
-  static const unsigned LVL_TYPE = 0x0000FF00;
   static const unsigned LVL_CORES = 0x0000FFFF;
   CPUID cpuID0(0, 0);
   unsigned HFS = cpuID0.EAX();
@@ -1419,14 +1417,8 @@ int cpu_numcores() {
   int numcpus = cpu_numcpus();
   if (cpuvendor == "GenuineIntel") {
     if(HFS >= 11) {
-      for (int lvl = 0; lvl < MAX_INTEL_TOP_LVL; lvl++) {
-        CPUID cpuID4(0x0B, lvl);
-        unsigned currLevel = (LVL_TYPE & cpuID4.ECX()) >> 8;
-        if (currLevel == 0x01) {
-	  mNumSMT = LVL_CORES & cpuID4.EBX();
-        }
-	break;
-      }
+      CPUID cpuID4(0x0B, 0);
+      mNumSMT = LVL_CORES & cpuID4.EBX();
       mNumCores = numcpus / mNumSMT;
     } else {
       if (HFS >= 1) {
