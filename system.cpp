@@ -66,6 +66,7 @@
 #elif (defined(__NetBSD__) || defined(__OpenBSD__))
 #include <sys/param.h>
 #include <sys/swap.h>
+#include <cpuid.h>
 #endif
 #endif
 #if !defined(__sun)
@@ -1377,7 +1378,6 @@ int cpu_numcores() {
   }
   return numcores;
   #elif defined(__DragonFly__)
-  int numcores = -1;
   char buf[1024];
   const char *result = nullptr;
   FILE *fp = popen("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'", "r");
@@ -1392,12 +1392,25 @@ int cpu_numcores() {
     numcores = (int)strtol(str.c_str(), nullptr, 10);
   }
   return numcores;
-  #elif defined(__NetBSD__)
-  // Unimplemented OS-level ...
-  return -1;
-  #elif defined(__OpenBSD__)
-  // Unimplemented OS-level ...
-  return -1;
+  #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+  auto cpuID = [](unsigned i, unsigned regs[4]) {
+    asm volatile("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (i), "c" (0));
+  }
+  char vendor[12];
+  cpuID(0, regs);
+  ((unsigned *)vendor)[0] = regs[1];
+  ((unsigned *)vendor)[1] = regs[3];
+  ((unsigned *)vendor)[2] = regs[2];
+  string cpuVendor = string(vendor, 12);
+  if (cpuVendor == "GenuineIntel") {
+    cpuID(4, regs);
+    numcores = (int)(((regs[0] >> 26) & 0x3f) + 1);
+
+  } else if (cpuVendor == "AuthenticAMD") {
+    cpuID(0x80000008, regs);
+    numcores = (int)(((unsigned)(regs[2] & 0xff)) + 1);
+  }
+  return numcores;
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
