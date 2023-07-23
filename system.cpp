@@ -1404,6 +1404,7 @@ int cpu_numcores() {
     const std::uint32_t &ECX() const {return regs[2];}
     const std::uint32_t &EDX() const {return regs[3];}
   };
+  static const std::uint32_t AVX_POS = 0x10000000;
   static const std::uint32_t LVL_NUM = 0x000000FF;
   static const std::uint32_t LVL_TYPE = 0x0000FF00;
   static const std::uint32_t LVL_CORES = 0x0000FFFF;
