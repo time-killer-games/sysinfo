@@ -1394,15 +1394,15 @@ int cpu_numcores() {
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   #define MAX_INTEL_TOP_LVL 4
   class CPUID {
-    uint32_t regs[4];
+    std::uint32_t regs[4];
     public:
     explicit CPUID(unsigned funcId, unsigned subFuncId) {
       asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (funcId), "c" (subFuncId));
     }
-    const uint32_t &EAX() const {return regs[0];}
-    const uint32_t &EBX() const {return regs[1];}
-    const uint32_t &ECX() const {return regs[2];}
-    const uint32_t &EDX() const {return regs[3];}
+    const std::uint32_t &EAX() const {return regs[0];}
+    const std::uint32_t &EBX() const {return regs[1];}
+    const std::uint32_t &ECX() const {return regs[2];}
+    const std::uint32_t &EDX() const {return regs[3];}
   };
   static const std::uint32_t LVL_NUM = 0x000000FF;
   static const std::uint32_t LVL_TYPE = 0x0000FF00;
