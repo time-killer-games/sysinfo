@@ -1395,7 +1395,7 @@ int cpu_numcores() {
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   auto cpuID = [](unsigned i, unsigned regs[4]) {
     asm volatile("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (i), "c" (0));
-  }
+  };
   unsigned regs[4];
   std::string cpuVendor = cpu_vendor();
   if (cpuVendor == "GenuineIntel") {
