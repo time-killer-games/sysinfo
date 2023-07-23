@@ -1434,7 +1434,7 @@ int cpu_numcores() {
         }
       }
       if (mIsHTT) {
-        if (!(mNumCores > 1)) {
+        if (mNumCores < 1) {
           mNumCores = 1;
         }
       } else {
