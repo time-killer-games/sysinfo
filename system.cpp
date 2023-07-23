@@ -66,7 +66,6 @@
 #elif (defined(__NetBSD__) || defined(__OpenBSD__))
 #include <sys/param.h>
 #include <sys/swap.h>
-#include <cpuid.h>
 #endif
 #endif
 #if !defined(__sun)
@@ -1393,20 +1392,69 @@ int cpu_numcores() {
   }
   return numcores;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
-  auto cpuID = [](unsigned i, unsigned regs[4]) {
-    asm volatile("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (i), "c" (0));
+  #define MAX_INTEL_TOP_LVL 4
+  class CPUID {
+    uint32_t regs[4];
+    public:
+    explicit CPUID(unsigned funcId, unsigned subFuncId) {
+      asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (funcId), "c" (subFuncId));
+    }
+    const uint32_t &EAX() const {return regs[0];}
+    const uint32_t &EBX() const {return regs[1];}
+    const uint32_t &ECX() const {return regs[2];}
+    const uint32_t &EDX() const {return regs[3];}
   };
-  unsigned regs[4];
-  std::string cpuVendor = cpu_vendor();
-  if (cpuVendor == "GenuineIntel") {
-    cpuID(4, regs);
-    numcores = (int)(((regs[0] >> 26) & 0x3f) + 1);
-
-  } else if (cpuVendor == "AuthenticAMD") {
-    cpuID(0x80000008, regs);
-    numcores = (int)(((unsigned)(regs[2] & 0xff)) + 1);
+  static const std::uint32_t LVL_NUM = 0x000000FF;
+  static const std::uint32_t LVL_TYPE = 0x0000FF00;
+  CPUID cpuID1(1, 0);
+  int mNumSMT = 0;
+  int mNumCores = 0;
+  int mNumLogCpus = 0;
+  bool mIsHTT = cpuID1.EDX() & AVX_POS;
+  std::string cpuvendor = cpu_vendor();
+  if (cpuvendor == "GenuineIntel") {
+    if(HFS >= 11) {
+      for (int lvl = 0; lvl < MAX_INTEL_TOP_LVL; lvl++) {
+        CPUID cpuID4(0x0B, lvl);
+        std::uint32_t currLevel = (LVL_TYPE & cpuID4.ECX()) >> 8;
+        switch(currLevel) {
+          case 0x01: mNumSMT = LVL_CORES & cpuID4.EBX(); break;
+          case 0x02: mNumLogCpus = LVL_CORES & cpuID4.EBX(); break;
+          default: break;
+        }
+      }
+      mNumCores = mNumLogCpus / mNumSMT;
+    } else {
+        if (HFS >= 1) {
+          mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
+          if (HFS >= 4) {
+            mNumCores = 1 + (CPUID(4, 0).EAX() >> 26) & 0x3F;
+          }
+        }
+        if (mIsHTT) {
+          if (!(mNumCores>1)) {
+            mNumCores = 1;
+            mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
+          }
+        } else {
+          mNumCores = mNumLogCpus = 1;
+        }
+      }
+    } else if (cpuvendor == "AuthenticAMD") {
+      if (HFS >= 1) {
+        if (CPUID(0x80000000, 0).EAX() >= 8) {
+          mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
+        }
+      }
+      if (mIsHTT) {
+        if (!(mNumCores > 1)) {
+          mNumCores = 1;
+        }
+      } else {
+        mNumCores = mNumLogCpus = 1;
+      }
+    }
   }
-  return numcores;
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
