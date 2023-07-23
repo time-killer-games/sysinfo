@@ -1406,6 +1406,8 @@ int cpu_numcores() {
   };
   static const std::uint32_t LVL_NUM = 0x000000FF;
   static const std::uint32_t LVL_TYPE = 0x0000FF00;
+  CPUID cpuID0(0, 0);
+  std::uint32_t HFS = cpuID0.EAX();
   CPUID cpuID1(1, 0);
   int mNumSMT = 0;
   int mNumCores = 0;
