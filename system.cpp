@@ -1393,45 +1393,11 @@ int cpu_numcores() {
   }
   return numcores;
   #elif defined(__NetBSD__)
-  char buf[1024];
-  const char *result = nullptr;
-  FILE *fp = popen("/sbin/dmesg | grep ', core ' | tail -1 | awk '{print substr($7, 0, length($7) - 1)}'", "r");
-  if (fp) {
-    if (fgets(buf, sizeof(buf), fp)) {
-      buf[strlen(buf) - 1] = '\0';
-      result = buf;
-    }
-    pclose(fp);
-    static std::string str;
-    str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)(strtol(str.c_str(), nullptr, 10) + 1);
-  }
-  return numcores;
+  // Unimplemented OS-level ...
+  return -1;
   #elif defined(__OpenBSD__)
-  int mib[2];
-  mib[0] = CTL_HW;
-  mib[1] = HW_NCPUONLINE;
-  int physical_cpus = -1;
-  std::size_t len = sizeof(int);
-  if (!sysctl(mib, 2, &physical_cpus, &len, nullptr, 0)) {
-    numcores = physical_cpus;
-  }
-  return numcores;
-  #elif defined(__sun)
-  char buf[1024];
-  const char *result = nullptr;
-  FILE *fp = popen("psrinfo -p", "r");
-  if (fp) {
-    if (fgets(buf, sizeof(buf), fp)) {
-      buf[strlen(buf) - 1] = '\0';
-      result = buf;
-    }
-    pclose(fp);
-    static std::string str;
-    str = (result && strlen(result)) ? result : "-1";
-    numcores = (int)strtol(str.c_str(), nullptr, 10);
-  }
-  return numcores;
+  // Unimplemented OS-level ...
+  return -1;
   #else
   return -1;
   #endif
