@@ -1436,7 +1436,7 @@ int cpu_numcores() {
         }
       }
       if (mIsHTT) {
-        if (!(mNumCores>1)) {
+        if (!(mNumCores > 1)) {
           mNumCores = 1;
           mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
         }
