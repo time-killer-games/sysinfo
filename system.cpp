@@ -1349,7 +1349,7 @@ int cpu_numcores() {
   #elif defined(__linux__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("cat /proc/cpuinfo | grep 'siblings' | awk 'NR==1{print $3}'", "r");
+  FILE *fp = popen("lscpu | grep 'Thread(s) per core:' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
