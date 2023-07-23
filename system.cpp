@@ -1364,7 +1364,7 @@ int cpu_numcores() {
   #elif defined(__FreeBSD__)
   char buf[1024];
   const char *result = nullptr;
-  FILE *fp = popen("sysctl -a | grep -i -o '[^ ]* core(s)' | awk 'NR==1{print $1}'", "r");
+  FILE *fp = popen("sysctl -n kern.sched.topology_spec | grep -c 'THREAD group'", "r");
   if (fp) {
     if (fgets(buf, sizeof(buf), fp)) {
       buf[strlen(buf) - 1] = '\0';
