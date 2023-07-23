@@ -1446,6 +1446,7 @@ int cpu_numcores() {
     }
   } else if (cpuvendor == "AuthenticAMD") {
     if (HFS >= 1) {
+      mNumLogCpus = (cpuID1.EBX() >> 16) & 0xFF;
       if (CPUID(0x80000000, 0).EAX() >= 8) {
         mNumCores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
       }
@@ -1453,6 +1454,7 @@ int cpu_numcores() {
     if (mIsHTT) {
       if (!(mNumCores > 1)) {
         mNumCores = 1;
+        mNumLogCpus = (mNumLogCpus >= 2 ? mNumLogCpus : 2);
       }
     } else {
       mNumCores = mNumLogCpus = 1;
