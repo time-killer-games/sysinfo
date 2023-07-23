@@ -1459,6 +1459,10 @@ int cpu_numcores() {
       }
     }
   }
+  if (nNumCores > 0) {
+    numcores = nNumCores;
+  }
+  return numcores;
   #elif defined(__sun)
   char buf[1024];
   const char *result = nullptr;
