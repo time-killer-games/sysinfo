@@ -2,7 +2,7 @@
 cd "${0%/*}";
 xxd -i pci.ids > pci.ids.hpp;
 if [ $(uname) = "Darwin" ]; then
-  clang++ main.cpp system.cpp -o sysinfo -std=c++17; ./sysinfo;
+  clang++ main.cpp system.cpp -o sysinfo -std=c++17 -arch x86_64 -arch arm64; ./sysinfo;
 elif [ $(uname) = "Linux" ]; then
   g++ main.cpp system.cpp -o sysinfo -std=c++17 -DCREATE_CONTEXT -static-libgcc -static-libstdc++ `pkg-config --cflags --libs sdl2` `pkg-config --cflags --libs x11` -lGL; ./sysinfo;
 elif [ $(uname) = "FreeBSD" ]; then
