@@ -36,24 +36,23 @@ using namespace ngs::sys;
 
 int main() {
   std::cout <<
-  "Product Name: " << utsname_codename() << "\n" <<
-  "Host Name: " << utsname_nodename() << "\n" <<
-  "OS Kernel: " << utsname_sysname() << "\n" <<
-  "OS Release: " << utsname_release() << "\n" <<
-  "OS Version: " << utsname_version() << "\n" <<
-  "OS Architecture: " << utsname_machine() << "\n" <<
-  "Total RAM: " << human_readable(memory_totalram()) << "\n" <<
-  "Free RAM: " << human_readable(memory_availram()) << "\n" <<
-  "Used RAM: " << human_readable(memory_usedram()) << "\n" <<
-  "Total Virtual Memory: " << human_readable(memory_totalvmem()) << "\n" <<
-  "Free Virtual Memory: " << human_readable(memory_availvmem()) << "\n" <<
-  "Used Virtual Memory: " << human_readable(memory_usedvmem()) << "\n" <<
-  "GPU Vendor: " << gpu_vendor() << "\n" <<
-  "GPU Renderer: " << gpu_renderer() << "\n" <<
-  "Dedicated Video Memory: " << human_readable(gpu_videomemory()) << "\n" <<
-  "CPU Vendor: " << cpu_vendor() << "\n" <<
-  "CPU Brand String: " << cpu_brand() << "\n" <<
-  "Number of CPU Cores: " << std::to_string(cpu_numcores()) << "\n" <<
-  "Number of CPU Processors: " << std::to_string(cpu_numcpus()) << "\n";
+  "OS DEVICE NAME: " << utsname_nodename() << "\n" <<
+  "OS PRODUCT NAME: " << utsname_codename() << "\n" <<
+  "OS ARCHITECTURE: " << utsname_machine() << "\n" <<
+  "KERNEL NAME: " << utsname_sysname() << "\n" <<
+  "KERNEL RELEASE: " << utsname_release() << "\n" <<
+  "CPU PROCESSOR: " << cpu_brand() << "\n" <<
+  "CPU VENDOR: " << cpu_vendor() << "\n" <<
+  "CPU CORE COUNT: " << std::to_string(cpu_numcores()) << "\n" <<
+  "CPU PROCESSOR COUNT: " << std::to_string(cpu_numcpus()) << "\n" <<
+  "RANDOM-ACCESS MEMORY TOTAL: " << human_readable(memory_totalram()) << "\n" <<
+  "RANDOM-ACCESS MEMORY USED: " << human_readable(memory_usedram()) << "\n" <<
+  "RANDOM-ACCESS MEMORY FREE: " << human_readable(memory_availram()) << "\n" <<
+  "SWAP MEMORY TOTAL: " << human_readable(memory_totalvmem()) << "\n" <<
+  "SWAP MEMORY USED: " << human_readable(memory_usedvmem()) << "\n" <<
+  "SWAP MEMORY FREE: " << human_readable(memory_availvmem()) << "\n" <<
+  "GPU MANUFACTURER: " << ((!gpu_vendor().empty()) ? gpu_vendor() : "(null)") << "\n" <<
+  "GPU RENDERER: " << ((!gpu_renderer().empty()) ? gpu_renderer() : "(null)") << "\n" <<
+  "GPU MEMORY: " << ((gpu_videomemory() > 0) ? human_readable(gpu_videomemory())  : "(null)") << "\n";
   return 0;
 }
