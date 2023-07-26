@@ -53,6 +53,6 @@ int main() {
   "SWAP MEMORY FREE: " << human_readable(memory_availvmem()) << "\n" <<
   "GPU MANUFACTURER: " << ((!gpu_vendor().empty()) ? gpu_vendor() : "(null)") << "\n" <<
   "GPU RENDERER: " << ((!gpu_renderer().empty()) ? gpu_renderer() : "(null)") << "\n" <<
-  "GPU MEMORY: " << ((gpu_videomemory() > 0) ? human_readable(gpu_videomemory())  : "(null)") << "\n";
+  "GPU MEMORY: " << ((gpu_videomemory() > 0) ? human_readable(gpu_videomemory()) : "(null)") << "\n";
   return 0;
 }
