@@ -40,7 +40,6 @@ int main() {
   "OS PRODUCT NAME: " << ((!utsname_codename().empty()) ? utsname_codename() : "(null)") << "\n" <<
   "OS KERNEL NAME: " << ((!utsname_sysname().empty()) ? utsname_sysname() : "(null)") << "\n" <<
   "OS KERNEL RELEASE: " << ((!utsname_release().empty()) ? utsname_release() : "(null)") << "\n" <<
-  "OS KERNEL VERSION: " << ((!utsname_version().empty()) ? utsname_version() : "(null)") << "\n" <<
   "OS ARCHITECTURE: " << ((!utsname_machine().empty()) ? utsname_machine() : "(null)") << "\n" <<
   "CPU PROCESSOR: " << ((!cpu_brand().empty()) ? cpu_brand() : "(null)") << "\n" <<
   "CPU VENDOR: " << ((!cpu_vendor().empty()) ? cpu_vendor() : "(null)") << "\n" <<
