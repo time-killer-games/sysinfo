@@ -36,24 +36,24 @@ using namespace ngs::sys;
 
 int main() {
   std::cout <<
-  "OS DEVICE NAME: " << ((!os_device_name().empty()) ? os_device_name() : "(null)") << "\n" <<
-  "OS PRODUCT NAME: " << ((!os_product_name().empty()) ? os_product_name() : "(null)") << "\n" <<
-  "OS KERNEL NAME: " << ((!os_kernel_name().empty()) ? os_kernel_name() : "(null)") << "\n" <<
-  "OS KERNEL RELEASE: " << ((!os_kernel_release().empty()) ? os_kernel_release() : "(null)") << "\n" <<
-  "OS KERNEL VERSION: " << ((!os_kernel_version().empty()) ? os_kernel_version() : "(null)") << "\n" <<
-  "OS ARCHITECTURE: " << ((!os_architecture().empty()) ? os_architecture() : "(null)") << "\n" <<
-  "CPU PROCESSOR: " << ((!cpu_processor().empty()) ? cpu_processor() : "(null)") << "\n" <<
-  "CPU VENDOR: " << ((!cpu_vendor().empty()) ? cpu_vendor() : "(null)") << "\n" <<
-  "CPU CORE COUNT: " << ((cpu_core_count() != -1) ? std::to_string(cpu_core_count()) : "(null)") << "\n" <<
-  "CPU PROCESSOR COUNT: " << ((cpu_processor_count() != -1) ? std::to_string(cpu_processor_count()) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY TOTAL: " << ((!memory_totalram(true).empty()) ? memory_totalram(true) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY USED: " << ((!memory_usedram(true).empty()) ? memory_usedram(true) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY FREE: " << ((!memory_freeram(true).empty()) ? memory_freeram(true) : "(null)") << "\n" <<
-  "SWAP MEMORY TOTAL: " << ((!memory_totalswap(true).empty()) ? memory_totalswap(true) : "(null)") << "\n" <<
-  "SWAP MEMORY USED: " << ((!memory_usedswap(true).empty()) ? memory_usedswap(true) : "(null)") << "\n" <<
-  "SWAP MEMORY FREE: " << ((!memory_freeswap(true).empty()) ? memory_freeswap(true) : "(null)") << "\n" <<
-  "GPU MANUFACTURER: " << ((!gpu_manufacturer().empty()) ? gpu_manufacturer() : "(null)") << "\n" <<
-  "GPU RENDERER: " << ((!gpu_renderer().empty()) ? gpu_renderer() : "(null)") << "\n" <<
-  "GPU MEMORY: " << ((!memory_totalvram(true).empty()) ? memory_totalvram(true) : "(null)") << "\n";
+  "OS DEVICE NAME: " << os_device_name() << "\n" <<
+  "OS PRODUCT NAME: " << os_product_name() << "\n" <<
+  "OS KERNEL NAME: " << os_kernel_name() << "\n" <<
+  "OS KERNEL RELEASE: " << os_kernel_release() << "\n" <<
+  "OS KERNEL VERSION: " << os_kernel_version() << "\n" <<
+  "OS ARCHITECTURE: " << os_architecture() << "\n" <<
+  "CPU VENDOR: " << cpu_vendor() << "\n" <<
+  "CPU PROCESSOR: " << cpu_processor() << "\n" <<
+  "CPU CORE COUNT: " << cpu_core_count() << "\n" <<
+  "CPU PROCESSOR COUNT: " << cpu_processor_count() << "\n" <<
+  "RANDOM-ACCESS MEMORY TOTAL: " << memory_totalram(true) << "\n" <<
+  "RANDOM-ACCESS MEMORY USED: " << memory_usedram(true) << "\n" <<
+  "RANDOM-ACCESS MEMORY FREE: " << memory_freeram(true) << "\n" <<
+  "SWAP MEMORY TOTAL: " << memory_totalswap(true) << "\n" <<
+  "SWAP MEMORY USED: " << memory_usedswap(true) << "\n" <<
+  "SWAP MEMORY FREE: " << memory_freeswap(true) << "\n" <<
+  "GPU MANUFACTURER: " << gpu_manufacturer() << "\n" <<
+  "GPU RENDERER: " << gpu_renderer() << "\n" <<
+  "GPU MEMORY: " << memory_totalvram(true) << "\n";
   return 0;
 }
