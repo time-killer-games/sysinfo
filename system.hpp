@@ -46,7 +46,7 @@ std::string gpu_manufacturer();
 std::string gpu_renderer();
 std::string cpu_vendor();
 std::string cpu_processor();
-int cpu_processor_count();
-int cpu_core_count();
+std::string cpu_processor_count();
+std::string cpu_core_count();
 
 } // namespace ngs::sys
