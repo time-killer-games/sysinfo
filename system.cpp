@@ -699,8 +699,8 @@ std::string memory_usedram(bool human_readable) {
   if (GlobalMemoryStatusEx(&statex))
     usedram = (long long)(statex.ullTotalPhys - statex.ullAvailPhys);
   #elif ((defined(__APPLE__) && defined(__MACH__)) ||defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
-  long long total = memory_totalram();
-  long long avail = memory_freeram();
+  long long total = strtoull(memory_totalram(false).c_str(), nullptr, 10);
+  long long avail = strtoull(memory_freeram(false).c_str(), nullptr, 10);
   if (total != -1 && avail != -1)
     usedram = total - avail;
   #elif defined(__linux__)
