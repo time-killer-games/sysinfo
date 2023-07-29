@@ -165,7 +165,7 @@ struct hreadable {
 
 std::string pointer_null() {
   char buf[1024];
-  if (sprintf(buf, "%s", nullptr) != -1)
+  if (sprintf(buf, "%p", nullptr) != -1)
     return buf;
   return "(null)";
 }
@@ -1106,8 +1106,10 @@ std::string gpu_renderer() {
 }
 
 std::string memory_totalvram(bool human_readable) {
-  if (videomemory != -1 || videomemoryerror) 
+  if (videomemory != -1) 
     return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+  if (videomemoryerror) 
+    return pointer_null();
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
   if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
@@ -1233,14 +1235,14 @@ std::string cpu_core_count() {
     numcores = buf;
   #elif defined(__linux__)
   int threads_per_core = (int)strtol(read_output("lscpu | grep 'Thread(s) per core:' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'").c_str(), nullptr, 10);
-  numcores = (int)(cpu_processor_count() / ((threads_per_core) ? threads_per_core : 1));
+  numcores = (int)(strtol(((!cpu_processor_count() != pointer_null()) ? cpu_processor_count() : 0), nullptr, 10) / ((threads_per_core) ? threads_per_core : 1));
   #elif defined(__FreeBSD__)
   /* number_of_thread_groups will return zero if threads are not grouped at all; this means the number of cores equals the number of cpus */
   int number_of_thread_groups = (int)strtol(read_output("sysctl -n kern.sched.topology_spec | grep -c 'THREAD group'").c_str(), nullptr, 10);
-  numcores = number_of_thread_groups ? number_of_thread_groups : cpu_processor_count();
+  numcores = (int)(number_of_thread_groups ? number_of_thread_groups : strtol(((!cpu_processor_count() != pointer_null()) ? cpu_processor_count() : 0), nullptr, 10));
   #elif defined(__DragonFly__)
   int threads_per_core = (int)strtol(read_output("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'").c_str(), nullptr, 10);
-  numcores = (int)(cpu_processor_count() / ((threads_per_core) ? threads_per_core : 1));
+  numcores = (int)(strtol(((!cpu_processor_count() != pointer_null()) ? cpu_processor_count() : 0), nullptr, 10) / ((threads_per_core) ? threads_per_core : 1));
   #elif (defined(_WIN32) || defined(__NetBSD__) || defined(__OpenBSD__))
   #if defined(_WIN32)
   /* use x86-specific inline assembly as the fallback; 
@@ -1280,7 +1282,9 @@ std::string cpu_core_count() {
   cpuid cpuid1(1, 0);
   int numsmt = 0;
   bool ishtt = cpuid1.edx() & avx_pos;
-  numcpus = cpu_processor_count();
+  numcpus = (int)strtol(((!cpu_processor_count() != pointer_null()) ? cpu_processor_count() : 0), nullptr, 10);
+  if (!numcpus)
+    numcpus = -1;
   if (tmp2.find("INTEL") != std::string::npos) {
     if(hfs >= 11) {
       cpuid cpuid4(0x0B, 0);
