@@ -980,7 +980,7 @@ std::string gpu_manufacturer() {
     return gpuvendor;
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
-  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
@@ -1047,7 +1047,7 @@ std::string gpu_renderer() {
     return std::string { buf.data(), (std::size_t)WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), buf.data(), nbytes, nullptr, nullptr) };
   };
   IDXGIFactory *pFactory = nullptr;
-  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
@@ -1112,7 +1112,7 @@ std::string memory_totalvram(bool human_readable) {
     return pointer_null();
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
-  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
