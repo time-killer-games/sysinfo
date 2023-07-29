@@ -164,9 +164,6 @@ struct hreadable {
 };
 
 std::string pointer_null() {
-  char buf[1024];
-  if (sprintf(buf, "%s", nullptr) != -1)
-    return buf;
   return "(null)";
 }
 
