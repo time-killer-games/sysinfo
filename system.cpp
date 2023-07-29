@@ -163,8 +163,16 @@ struct hreadable {
   }
 };
 
+std::string pointer_null() {
+  char buf[1024];
+  if (sprintf(buf, "%s", nullptr) != -1)
+    return buf;
+  return "(null)";
+}
+
 std::string make_hreadable(long double nbytes) {
-  if (nbytes == -1) return "";
+  if (nbytes == -1) 
+    return pointer_null();
   std::stringstream ss;
   ss << hreadable{nbytes};
   return ss.str();
@@ -389,13 +397,6 @@ std::string get_vendor_or_device_name_by_id(unsigned identifier, bool vendor_or_
     }
   }
   return vendor_or_device ? device_name_by_id[identifier] : vendor_name_by_id[identifier];
-}
-
-std::string pointer_null() {
-  char buf[1024];
-  if (sprintf(buf, "%s", nullptr) != -1)
-    return buf;
-  return "(null)";
 }
 
 } // anonymous namespace
