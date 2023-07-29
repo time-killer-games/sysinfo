@@ -1256,21 +1256,29 @@ std::string cpu_core_count() {
   std::string tmp2 = cpu_vendor();
   std::transform(tmp1.begin(), tmp1.end(), tmp1.begin(), ::toupper);
   std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::toupper);
-  if (tmp1.find("86") == std::string::npos || tmp1.find("AMD64") == std::string::npos ||
-    tmp2.find("INTEL") == std::string::npos || tmp2.find("AMD") == std::string::npos) {
+  if (tmp1.find("86") == std::string::npos && tmp1.find("AMD64") == std::string::npos &&
+    tmp2.find("INTEL") == std::string::npos && tmp2.find("AMD") == std::string::npos) {
     numcoreserror = true;
     return pointer_null();
   }
   class cpuid {
     unsigned regs[4];
-    public:
+  public:
     explicit cpuid(unsigned func_id, unsigned sub_func_id) {
       asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (func_id), "c" (sub_func_id));
     }
-    const unsigned &eax() const { return regs[0]; }
-    const unsigned &ebx() const { return regs[1]; }
-    const unsigned &ecx() const { return regs[2]; }
-    const unsigned &edx() const { return regs[3]; }
+    const unsigned &eax() const {
+      return regs[0];
+    }
+    const unsigned &ebx() const {
+      return regs[1];
+    }
+    const unsigned &ecx() const {
+      return regs[2];
+    }
+    const unsigned &edx() const {
+      return regs[3];
+    }
   };
   static const unsigned avx_pos = 0x10000000;
   static const unsigned lvl_cores = 0x0000FFFF;
