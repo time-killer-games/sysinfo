@@ -1007,12 +1007,12 @@ std::string gpu_manufacturer() {
 	return gpuvendor;
   #else
   unsigned identifier = 0;
-  std::istringstream converter(read_ouput("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $1}'"));
+  std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $1}'"));
   converter >> std::hex >> identifier;
   gpuvendor = get_vendor_or_device_name_by_id(identifier, 0);
   if (!gpuvendor.empty()) 
 	return gpuvendor;
-  gpuvendor = read_ouput("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
+  gpuvendor = read_output("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
   if (!gpuvendor.empty()) 
 	return gpuvendor;
   #endif
@@ -1074,12 +1074,12 @@ std::string gpu_renderer() {
 	return gpurenderer;
   #else
   unsigned identifier = 0;
-  std::istringstream converter(read_ouput("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $2}'"));
+  std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $2}'"));
   converter >> std::hex >> identifier;
   gpurenderer = get_vendor_or_device_name_by_id(identifier, 1);
   if (!gpurenderer.empty()) 
 	return gpurenderer;
-  gpurenderer = read_ouput("system_profiler SPDisplaysDataType | grep -i 'Chipset Model: ' | uniq | awk -F 'Chipset Model: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
+  gpurenderer = read_output("system_profiler SPDisplaysDataType | grep -i 'Chipset Model: ' | uniq | awk -F 'Chipset Model: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
   if (!gpurenderer.empty()) 
 	return gpurenderer;
   #endif
@@ -1209,7 +1209,7 @@ int cpu_core_count() {
   numcores = (int)(cpu_processor_count() / ((threads_per_core) ? threads_per_core : 1));
   #elif defined(__FreeBSD__)
   /* number_of_thread_groups will return zero if threads are not grouped at all; this means the number of cores equals the number of cpus */
-  int number_of_thread_groups = (int)strtol(read_ouput("sysctl -n kern.sched.topology_spec | grep -c 'THREAD group'").c_str(), nullptr, 10);
+  int number_of_thread_groups = (int)strtol(read_output("sysctl -n kern.sched.topology_spec | grep -c 'THREAD group'").c_str(), nullptr, 10);
   numcores = number_of_thread_groups ? number_of_thread_groups : cpu_processor_count();
   #elif defined(__DragonFly__)
   int threads_per_core = (int)strtol(read_output("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'").c_str(), nullptr, 10);
