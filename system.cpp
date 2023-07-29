@@ -254,6 +254,7 @@ static std::string read_output(std::string cmd) {
   }
   #else
   char buf[1024];
+  ssize_t nRead = 0;
   FILE *fp = popen(cmd.c_str(), "r");
   if (fp) {
     while ((nRead = read(fileno(fp), buf, 1024)) > 0) {
