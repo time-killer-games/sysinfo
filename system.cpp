@@ -577,12 +577,17 @@ std::string os_product_name() {
     productname = tmp1;
   }
   #elif defined(__linux__)
-  std::string tmp = read_output("echo $(lsb_release --id && lsb_release --release && lsb_release --codename) |  tr '\n' ' '");
+  std::string tmp = read_output("echo $(lsb_release --id 2> /dev/null && lsb_release --release 2> /dev/null && lsb_release --codename 2> /dev/null)");
   if (!tmp.empty()) {
+    tmp = std::regex_replace(tmp, std::regex("\r"), "");
+    tmp = std::regex_replace(tmp, std::regex("\n"), "");
     tmp = std::regex_replace(tmp, std::regex("Distributor ID: "), "");
     tmp = std::regex_replace(tmp, std::regex("Release: "), "");
     tmp = std::regex_replace(tmp, std::regex("Codename: "), "");
     productname = tmp;
+  } else {
+    /* if lsb_release is not installed use kernel + release: */
+    productname = os_kernel_name() + " " + os_kernel_release();
   }
   #elif !defined(__sun)
   productname = os_kernel_name() + " " + os_kernel_release();
