@@ -587,7 +587,7 @@ std::string os_product_name() {
   #elif !defined(__sun)
   productname = os_kernel_name() + " " + os_kernel_release();
   #else
-  productname = read_output("echo $(lsb_release --id && lsb_release --release && lsb_release --codename) |  tr '\n' ' '");
+  productname = read_output("awk 'NR==1{print $1,$2,$3}' /etc/release");
   #endif
   if (!productname.empty())
     return productname;
