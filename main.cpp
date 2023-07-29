@@ -36,23 +36,24 @@ using namespace ngs::sys;
 
 int main() {
   std::cout <<
-  "OS DEVICE NAME: " << ((!utsname_nodename().empty()) ? utsname_nodename() : "(null)") << "\n" <<
-  "OS PRODUCT NAME: " << ((!utsname_codename().empty()) ? utsname_codename() : "(null)") << "\n" <<
-  "OS KERNEL NAME: " << ((!utsname_sysname().empty()) ? utsname_sysname() : "(null)") << "\n" <<
-  "OS KERNEL RELEASE: " << ((!utsname_release().empty()) ? utsname_release() : "(null)") << "\n" <<
-  "OS ARCHITECTURE: " << ((!utsname_machine().empty()) ? utsname_machine() : "(null)") << "\n" <<
-  "CPU PROCESSOR: " << ((!cpu_brand().empty()) ? cpu_brand() : "(null)") << "\n" <<
+  "OS DEVICE NAME: " << ((!os_device_name().empty()) ? os_device_name() : "(null)") << "\n" <<
+  "OS PRODUCT NAME: " << ((!os_product_name().empty()) ? os_product_name() : "(null)") << "\n" <<
+  "OS KERNEL NAME: " << ((!os_kernel_name().empty()) ? os_kernel_name() : "(null)") << "\n" <<
+  "OS KERNEL RELEASE: " << ((!os_kernel_release().empty()) ? os_kernel_release() : "(null)") << "\n" <<
+  "OS KERNEL VERSION: " << ((!os_kernel_version().empty()) ? os_kernel_version() : "(null)") << "\n" <<
+  "OS ARCHITECTURE: " << ((!os_architecture().empty()) ? os_architecture() : "(null)") << "\n" <<
+  "CPU PROCESSOR: " << ((!cpu_processor().empty()) ? cpu_processor() : "(null)") << "\n" <<
   "CPU VENDOR: " << ((!cpu_vendor().empty()) ? cpu_vendor() : "(null)") << "\n" <<
-  "CPU CORE COUNT: " << ((cpu_numcores() != -1) ? std::to_string(cpu_numcores()) : "(null)") << "\n" <<
-  "CPU PROCESSOR COUNT: " << ((cpu_numcpus() != -1) ? std::to_string(cpu_numcpus()) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY TOTAL: " << ((memory_totalram() != -1) ? human_readable(memory_totalram()) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY USED: " << ((memory_usedram() != -1) ? human_readable(memory_usedram()) : "(null)") << "\n" <<
-  "RANDOM-ACCESS MEMORY FREE: " << ((memory_availram() != -1) ? human_readable(memory_availram()) : "(null)") << "\n" <<
-  "SWAP MEMORY TOTAL: " << ((memory_totalvmem() != -1) ? human_readable(memory_totalvmem()) : "(null)") << "\n" <<
-  "SWAP MEMORY USED: " << ((memory_usedvmem() != -1) ? human_readable(memory_usedvmem()) : "(null)") << "\n" <<
-  "SWAP MEMORY FREE: " << ((memory_availvmem() != -1) ? human_readable(memory_availvmem()) : "(null)") << "\n" <<
-  "GPU MANUFACTURER: " << ((!gpu_vendor().empty()) ? gpu_vendor() : "(null)") << "\n" <<
+  "CPU CORE COUNT: " << ((cpu_core_count() != -1) ? std::to_string(cpu_core_count()) : "(null)") << "\n" <<
+  "CPU PROCESSOR COUNT: " << ((cpu_processor_count() != -1) ? std::to_string(cpu_processor_count()) : "(null)") << "\n" <<
+  "RANDOM-ACCESS MEMORY TOTAL: " << ((!memory_totalram(true).empty()) ? memory_totalram(true) : "(null)") << "\n" <<
+  "RANDOM-ACCESS MEMORY USED: " << ((!memory_usedram(true).empty()) ? memory_usedram(true) : "(null)") << "\n" <<
+  "RANDOM-ACCESS MEMORY FREE: " << ((!memory_freeram(true).empty()) ? memory_freeram(true) : "(null)") << "\n" <<
+  "SWAP MEMORY TOTAL: " << ((!memory_totalswap(true).empty()) ? memory_totalswap(true) : "(null)") << "\n" <<
+  "SWAP MEMORY USED: " << ((!memory_usedswap(true).empty()) ? memory_usedswap(true) : "(null)") << "\n" <<
+  "SWAP MEMORY FREE: " << ((!memory_freeswap(true).empty()) ? memory_freeswap(true) : "(null)") << "\n" <<
+  "GPU MANUFACTURER: " << ((!gpu_manufacturer().empty()) ? gpu_manufacturer() : "(null)") << "\n" <<
   "GPU RENDERER: " << ((!gpu_renderer().empty()) ? gpu_renderer() : "(null)") << "\n" <<
-  "GPU MEMORY: " << ((gpu_videomemory() != -1) ? human_readable(gpu_videomemory()) : "(null)") << "\n";
+  "GPU MEMORY: " << ((!memory_totalvram(true).empty()) ? memory_totalvram(true) : "(null)") << "\n";
   return 0;
 }
