@@ -241,9 +241,9 @@ static std::string read_output(std::string cmd) {
         buffer[nRead] = '\0';
         result.append(buffer, nRead);
       }
-	  // remove trailing whitespace and newlines we do not need in return strings
-	  while (!result.empty() && (result.back() == ' ' || result.back() == '\t' ||
-	    result.back() == '\r' || result.back() == '\n')) {
+      // remove trailing whitespace and newlines we do not need in return strings
+      while (!result.empty() && (result.back() == ' ' || result.back() == '\t' ||
+        result.back() == '\r' || result.back() == '\n')) {
         result.pop_back();
       }
     }
@@ -259,11 +259,11 @@ static std::string read_output(std::string cmd) {
   if (fp) {
     while ((nRead = read(fileno(fp), buf, 1024)) > 0) {
       buf[nRead] = '\0';
-	  result.append(buf, nRead);
-	}
-	// remove trailing whitespace and newlines we do not need in return strings
-	while (!result.empty() && (result.back() == ' ' || result.back() == '\t' ||
-	  result.back() == '\r' || result.back() == '\n')) {
+      result.append(buf, nRead);
+    }
+    // remove trailing whitespace and newlines we do not need in return strings
+    while (!result.empty() && (result.back() == ' ' || result.back() == '\t' ||
+      result.back() == '\r' || result.back() == '\n')) {
       result.pop_back();
     }
     pclose(fp);
@@ -483,7 +483,7 @@ std::string os_kernel_release() {
   #else
   if (!windows_version_number.empty()) {
     kernelrelease = windows_version_number;
-	return kernelrelease;
+    return kernelrelease;
   }
   allocate_windows_version_number_and_product_name();
   kernelrelease = windows_version_number;
@@ -524,7 +524,7 @@ std::string os_kernel_version() {
   #else
   std::string tmp = read_output("cmd /c ver");
   if (!tmp.empty()) {
-	tmp = std::regex_replace(tmp, std::regex("\t"), "");
+    tmp = std::regex_replace(tmp, std::regex("\t"), "");
     tmp = std::regex_replace(tmp, std::regex("\r"), "");
     tmp = std::regex_replace(tmp, std::regex("\n"), "");
     kernelversion = tmp;
@@ -542,7 +542,7 @@ std::string os_product_name() {
   #if defined(_WIN32)
   if (!windows_product_name.empty()) {
     productname = windows_product_name;
-	return productname;
+    return productname;
   }
   allocate_windows_version_number_and_product_name();
   productname = windows_product_name;
@@ -574,7 +574,7 @@ std::string os_product_name() {
       }
       doc.close();
     }
-	productname = tmp1;
+    productname = tmp1;
   }
   #elif defined(__linux__)
   std::string tmp = read_output("echo $(lsb_release --id && lsb_release --release && lsb_release --codename) |  tr '\n' ' '");
@@ -965,7 +965,7 @@ again:
 
 std::string gpu_manufacturer() {
   if (!gpuvendor.empty() || gpuvendorerror)
-	return gpuvendor;
+    return gpuvendor;
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
   if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
@@ -980,7 +980,7 @@ std::string gpu_manufacturer() {
     pFactory->Release();
   }
   if (!gpuvendor.empty())
-	return gpuvendor;
+    return gpuvendor;
   #elif (!defined(__APPLE__) && !defined(__MACH__))
   #if defined(CREATE_CONTEXT)
   create_context();
@@ -991,7 +991,7 @@ std::string gpu_manufacturer() {
   converter >> std::hex >> identifier;
   gpuvendor = get_vendor_or_device_name_by_id(identifier, 0);
   if (!gpuvendor.empty())
-	return gpuvendor;
+    return gpuvendor;
   #endif
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
@@ -999,22 +999,22 @@ std::string gpu_manufacturer() {
   queryInteger(GLX_RENDERER_VENDOR_ID_MESA, &v);
   gpuvendor = v ? get_vendor_or_device_name_by_id(v, 0) : "";
   if (!gpuvendor.empty())
-	return gpuvendor;
+    return gpuvendor;
   PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC queryString;
   queryString = (PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererStringMESA");
   gpuvendor = queryString(GLX_RENDERER_VENDOR_ID_MESA);
   if (!gpuvendor.empty())
-	return gpuvendor;
+    return gpuvendor;
   #else
   unsigned identifier = 0;
   std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $1}'"));
   converter >> std::hex >> identifier;
   gpuvendor = get_vendor_or_device_name_by_id(identifier, 0);
   if (!gpuvendor.empty()) 
-	return gpuvendor;
+    return gpuvendor;
   gpuvendor = read_output("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
   if (!gpuvendor.empty()) 
-	return gpuvendor;
+    return gpuvendor;
   #endif
   gpuvendorerror = true;
   return "";
@@ -1022,7 +1022,7 @@ std::string gpu_manufacturer() {
 
 std::string gpu_renderer() {
   if (!gpurenderer.empty() || gpurenderererror) 
-	return gpurenderer;
+    return gpurenderer;
   std::string result;
   #if defined(_WIN32)
   auto narrow = [](std::wstring wstr) {
@@ -1039,10 +1039,10 @@ std::string gpu_renderer() {
       if (pAdapter->GetDesc(&adapterDesc) == S_OK) {
         gpurenderer = get_vendor_or_device_name_by_id(adapterDesc.DeviceId, 1);
         if (!gpurenderer.empty()) 
-	      return gpurenderer;
+          return gpurenderer;
         gpurenderer = narrow(adapterDesc.Description);
         if (!gpurenderer.empty()) 
-	      return gpurenderer;
+          return gpurenderer;
       }
       pAdapter->Release();
     }
@@ -1058,7 +1058,7 @@ std::string gpu_renderer() {
   converter >> std::hex >> identifier;
   gpurenderer = get_vendor_or_device_name_by_id(identifier, 1);
   if (!gpurenderer.empty())
-	return gpurenderer;
+    return gpurenderer;
   #endif
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
@@ -1066,22 +1066,22 @@ std::string gpu_renderer() {
   queryInteger(GLX_RENDERER_DEVICE_ID_MESA, &v);
   gpurenderer = v ? get_vendor_or_device_name_by_id(v, 1) : "";
   if (!gpurenderer.empty())
-	return gpurenderer;
+    return gpurenderer;
   PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC queryString;
   queryString = (PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererStringMESA");
   gpurenderer = queryString(GLX_RENDERER_DEVICE_ID_MESA);
   if (!gpurenderer.empty())
-	return gpurenderer;
+    return gpurenderer;
   #else
   unsigned identifier = 0;
   std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $2}'"));
   converter >> std::hex >> identifier;
   gpurenderer = get_vendor_or_device_name_by_id(identifier, 1);
   if (!gpurenderer.empty()) 
-	return gpurenderer;
+    return gpurenderer;
   gpurenderer = read_output("system_profiler SPDisplaysDataType | grep -i 'Chipset Model: ' | uniq | awk -F 'Chipset Model: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
   if (!gpurenderer.empty()) 
-	return gpurenderer;
+    return gpurenderer;
   #endif
   gpurenderererror = true;
   return "";
@@ -1089,7 +1089,7 @@ std::string gpu_renderer() {
 
 std::string memory_totalvram(bool human_readable) {
   if (videomemory != -1 || videomemoryerror) 
-	return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+    return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
   if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
@@ -1116,7 +1116,7 @@ std::string memory_totalvram(bool human_readable) {
   videomemory = v * 1024 * 1024;
   #endif
   if (videomemory > 0) 
-	return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+    return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
   videomemoryerror = true;
   videomemory = -1;
   return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
@@ -1194,7 +1194,7 @@ int cpu_core_count() {
   if (!tmp.empty()) {
     tmp = std::regex_replace(tmp, std::regex("NumberOfCores"), "");
     tmp = std::regex_replace(tmp, std::regex(" "), "");
-	tmp = std::regex_replace(tmp, std::regex("\t"), "");
+    tmp = std::regex_replace(tmp, std::regex("\t"), "");
     tmp = std::regex_replace(tmp, std::regex("\r"), "");
     tmp = std::regex_replace(tmp, std::regex("\n"), "");
     numcores = (int)strtol(tmp.c_str(), nullptr, 10);
@@ -1227,8 +1227,10 @@ int cpu_core_count() {
   possible to do so. If the current platform is not i386/amd64 this fails */
   cpuvendor = cpu_vendor();
   if (os_architecture() != "i386" || os_architecture() != "amd64" ||
-    cpuvendor != "GenuineIntel" || cpuvendor != "AuthenticAMD" || cpuvendor != "AMDisbetter!")
-    goto failed;
+    cpuvendor != "GenuineIntel" || cpuvendor != "AuthenticAMD" || cpuvendor != "AMDisbetter!") {
+    numcoreserror = true;
+    numcores = -1;
+  }
   class CPUID {
     unsigned regs[4];
     public:
@@ -1286,7 +1288,6 @@ int cpu_core_count() {
       }
     }
   }
-failed:
   #elif defined(__sun)
   numcores = (int)strtol(read_output("echo `expr $(kstat cpu_info | grep 'pkg_core_id' | uniq | wc -l | awk '{print $1}') / $(psrinfo -p)`").c_str(), nullptr, 10);
   #endif
