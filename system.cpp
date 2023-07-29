@@ -391,6 +391,13 @@ std::string get_vendor_or_device_name_by_id(unsigned identifier, bool vendor_or_
   return vendor_or_device ? device_name_by_id[identifier] : vendor_name_by_id[identifier];
 }
 
+std::string pointer_null() {
+  char buf[1024];
+  if (sprintf(buf, "%s", nullptr) != -1)
+    return buf;
+  return "(null)";
+}
+
 } // anonymous namespace
 
 std::string os_kernel_name() {
@@ -421,7 +428,7 @@ std::string os_kernel_name() {
   if (!kernelname.empty())
     return kernelname;
   kernelnameerror = true;
-  return kernelname;
+  return pointer_null();
 }
 
 std::string os_device_name() {
@@ -458,7 +465,7 @@ std::string os_device_name() {
   if (!devicename.empty())
     return devicename;
   devicenameerror = true;
-  return devicename;
+  return pointer_null();
 }
 
 std::string os_kernel_release() {
@@ -491,7 +498,7 @@ std::string os_kernel_release() {
   if (!kernelrelease.empty())
     return kernelrelease;
   kernelreleaseerror = true;
-  return kernelrelease;
+  return pointer_null();
 }
 
 std::string os_kernel_version() {
@@ -533,7 +540,7 @@ std::string os_kernel_version() {
   if (!kernelversion.empty())
     return kernelversion;
   kernelversionerror = true;
-  return kernelversion;
+  return pointer_null();
 }
 
 std::string os_product_name() {
@@ -597,7 +604,7 @@ std::string os_product_name() {
   if (!productname.empty())
     return productname;
   productnameerror = true;
-  return productname;
+  return pointer_null();
 }
 
 std::string os_architecture() {
@@ -628,7 +635,7 @@ std::string os_architecture() {
   if (!architecture.empty())
     return architecture;
   architectureerror = true;
-  return architecture;
+  return pointer_null();
 }
 
 std::string memory_totalram(bool human_readable) {
@@ -663,8 +670,7 @@ std::string memory_totalram(bool human_readable) {
   if (totalram > 0)
     return human_readable ? make_hreadable(totalram) : std::to_string(totalram);
   totalramerror = true;
-  totalram = -1;
-  return human_readable ? make_hreadable(totalram) : std::to_string(totalram);
+  return pointer_null();
 }
 
 std::string memory_freeram(bool human_readable) {
@@ -973,7 +979,7 @@ std::string gpu_manufacturer() {
     return gpuvendor;
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
-  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
@@ -990,7 +996,7 @@ std::string gpu_manufacturer() {
   #if defined(CREATE_CONTEXT)
   if (!create_context()) {
     gpuvendorerror = true;
-    return gpuvendor;
+    return pointer_null();
   }
   #endif
   #if defined(__sun)
@@ -1025,7 +1031,7 @@ std::string gpu_manufacturer() {
     return gpuvendor;
   #endif
   gpuvendorerror = true;
-  return "";
+  return pointer_null();
 }
 
 std::string gpu_renderer() {
@@ -1040,7 +1046,7 @@ std::string gpu_renderer() {
     return std::string { buf.data(), (std::size_t)WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.length(), buf.data(), nbytes, nullptr, nullptr) };
   };
   IDXGIFactory *pFactory = nullptr;
-  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
@@ -1060,7 +1066,7 @@ std::string gpu_renderer() {
   #if defined(CREATE_CONTEXT)
   if (!create_context()) {
     gpurenderererror = true;
-    return gpurenderer;
+    return pointer_null();
   }
   #endif
   #if defined(__sun)
@@ -1095,7 +1101,7 @@ std::string gpu_renderer() {
     return gpurenderer;
   #endif
   gpurenderererror = true;
-  return "";
+  return pointer_null();
 }
 
 std::string memory_totalvram(bool human_readable) {
@@ -1103,7 +1109,7 @@ std::string memory_totalvram(bool human_readable) {
     return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
   #if defined(_WIN32)
   IDXGIFactory *pFactory = nullptr;
-  if (CreateDXGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
+  if (CreatedxGIFactory(__uuidof(IDXGIFactory), (void **)&pFactory) == S_OK) {
     IDXGIAdapter *pAdapter = nullptr;
     if (pFactory->EnumAdapters(0, &pAdapter) == S_OK) {
       DXGI_ADAPTER_DESC adapterDesc;
@@ -1120,8 +1126,7 @@ std::string memory_totalvram(bool human_readable) {
   #if defined(CREATE_CONTEXT)
   if (!create_context()) {
     videomemoryerror = true;
-    videomemory = -1;
-    return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+    return pointer_null();
   }
   #endif
   unsigned v = 0;
@@ -1133,8 +1138,7 @@ std::string memory_totalvram(bool human_readable) {
   if (videomemory > 0) 
     return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
   videomemoryerror = true;
-  videomemory = -1;
-  return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+  return pointer_null();
 }
 
 std::string cpu_vendor() {
@@ -1163,10 +1167,15 @@ std::string cpu_vendor() {
   #elif defined(__sun)
   cpuvendor = read_output("psrinfo -v -p | awk 'NR==2{print substr($2, 2)}'");
   #endif
+  std::string tmp = os_architecture();
+  std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+  if (cpuvendor.empty() && (tmp.find("ARM") != std::string::npos || 
+    tmp.find("AARCH64") != std::string::npos))
+    cpuvendor = "ARM";
   if (!cpuvendor.empty())
     return cpuvendor;
   cpuvendorerror = true;
-  return "";
+  return pointer_null();
 }
 
 std::string cpu_processor() {
@@ -1198,12 +1207,14 @@ std::string cpu_processor() {
   if (!cpubrand.empty())
     return cpubrand;
   cpubranderror = true;
-  return "";
+  return pointer_null();
 }
 
-int cpu_core_count() {
-  if (numcores != -1 || numcoreserror)
-    return numcores;
+std::string cpu_core_count() {
+  if (numcores != -1)
+    return std::to_string(numcores);
+  if (numcoreserror)
+    return pointer_null();
   #if defined(_WIN32)
   std::string tmp = read_output("wmic cpu get NumberOfCores");
   if (!tmp.empty()) {
@@ -1233,50 +1244,54 @@ int cpu_core_count() {
   #if defined(_WIN32)
   /* use x86-specific inline assembly as the fallback; 
   for windows programs run under WINE (no wmic cli) */
-  if (numcores > 0) {
-    return numcores;
-  }
+  if (!numcores)
+    numcores = -1;
+  if (numcores != -1)
+    return std::to_string(numcores);
   #endif
   /* netbsd and openbsd have no exposed api for getting the number of cores; 
   we use x86-specific inline assembly for intel-and-amd-based cpus when it's
   possible to do so. If the current platform is not i386/amd64 this fails */
-  cpuvendor = cpu_vendor();
-  if (os_architecture() != "i386" || os_architecture() != "amd64" ||
-    cpuvendor != "GenuineIntel" || cpuvendor != "AuthenticAMD" || cpuvendor != "AMDisbetter!") {
+  std::string tmp1 = os_architecture();
+  std::string tmp2 = cpu_vendor();
+  std::transform(tmp1.begin(), tmp1.end(), tmp1.begin(), ::toupper);
+  std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::toupper);
+  if (tmp1.find("86") == std::string::npos || tmp1.find("AMD64") == std::string::npos ||
+    tmp2.find("INTEL") == std::string::npos || tmp2.find("AMD") == std::string::npos) {
     numcoreserror = true;
-    numcores = -1;
+    return pointer_null();
   }
-  class CPUID {
+  class cpuid {
     unsigned regs[4];
     public:
-    explicit CPUID(unsigned funcId, unsigned subFuncId) {
-      asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (funcId), "c" (subFuncId));
+    explicit cpuid(unsigned func_id, unsigned sub_func_id) {
+      asm volatile ("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3]) : "a" (func_id), "c" (sub_func_id));
     }
-    const unsigned &EAX() const { return regs[0]; }
-    const unsigned &EBX() const { return regs[1]; }
-    const unsigned &ECX() const { return regs[2]; }
-    const unsigned &EDX() const { return regs[3]; }
+    const unsigned &eax() const { return regs[0]; }
+    const unsigned &ebx() const { return regs[1]; }
+    const unsigned &ecx() const { return regs[2]; }
+    const unsigned &edx() const { return regs[3]; }
   };
-  static const unsigned AVX_POS = 0x10000000;
-  static const unsigned LVL_CORES = 0x0000FFFF;
-  CPUID cpuID0(0, 0);
-  unsigned HFS = cpuID0.EAX();
-  CPUID cpuID1(1, 0);
-  int mNumSMT = 0;
-  bool mIsHTT = cpuID1.EDX() & AVX_POS;
+  static const unsigned avx_pos = 0x10000000;
+  static const unsigned lvl_cores = 0x0000FFFF;
+  cpuid cpuid0(0, 0);
+  unsigned hfs = cpuid0.eax();
+  cpuid cpuid1(1, 0);
+  int numsmt = 0;
+  bool ishtt = cpuid1.edx() & avx_pos;
   numcpus = cpu_processor_count();
-  if (cpuvendor == "GenuineIntel") {
-    if(HFS >= 11) {
-      CPUID cpuID4(0x0B, 0);
-      mNumSMT = LVL_CORES & cpuID4.EBX();
-      numcores = numcpus / mNumSMT;
+  if (tmp2.find("INTEL") != std::string::npos) {
+    if(hfs >= 11) {
+      cpuid cpuid4(0x0B, 0);
+      numsmt = lvl_cores & cpuid4.ebx();
+      numcores = numcpus / numsmt;
     } else {
-      if (HFS >= 1) {
-        if (HFS >= 4) {
-          numcores = 1 + (CPUID(4, 0).EAX() >> 26) & 0x3F;
+      if (hfs >= 1) {
+        if (hfs >= 4) {
+          numcores = 1 + (cpuid(4, 0).eax() >> 26) & 0x3F;
         }
       }
-      if (mIsHTT) {
+      if (ishtt) {
         if (numcores < 1) {
           numcores = 1;
         }
@@ -1284,17 +1299,17 @@ int cpu_core_count() {
         numcores = 1;
       }
     }
-  } else if (cpuvendor == "AuthenticAMD" || cpuvendor == "AMDisbetter!") {
-    mNumSMT = 1 + ((CPUID(0x8000001e, 0).EBX() >> 8) & 0xFF);
-    if (numcpus > 0 && mNumSMT > 0) {
-      numcores = numcpus / mNumSMT;
+  } else if (tmp2.find("AMD") != std::string::npos) {
+    numsmt = 1 + ((cpuid(0x8000001E, 0).ebx() >> 8) & 0xFF);
+    if (numcpus > 0 && numsmt > 0) {
+      numcores = numcpus / numsmt;
     } else {
-      if (HFS >= 1) {
-        if (CPUID(0x80000000, 0).EAX() >= 8) {
-          numcores = 1 + (CPUID(0x80000008, 0).ECX() & 0xFF);
+      if (hfs >= 1) {
+        if (cpuid(0x80000000, 0).eax() >= 8) {
+          numcores = 1 + (cpuid(0x80000008, 0).ecx() & 0xFF);
         }
       }
-      if (mIsHTT) {
+      if (ishtt) {
         if (numcores < 1) {
           numcores = 1;
         }
@@ -1306,16 +1321,19 @@ int cpu_core_count() {
   #elif defined(__sun)
   numcores = (int)strtol(read_output("echo `expr $(kstat cpu_info | grep 'pkg_core_id' | uniq | wc -l | awk '{print $1}') / $(psrinfo -p)`").c_str(), nullptr, 10);
   #endif
-  if (numcores > 0)
-    return numcores;
+  if (!numcores)
+    numcores = -1;
+  if (numcores != -1)
+    return std::to_string(numcores);
   numcoreserror = true;
-  numcores = -1;
-  return numcores;
+  return pointer_null();
 }
 
-int cpu_processor_count() {
-  if (numcpus != -1 || numcpuserror)
-    return numcpus;
+std::string cpu_processor_count() {
+  if (numcpus != -1)
+    return std::to_string(numcpus);
+  if (numcpuserror)
+    return pointer_null();
   #if defined(_WIN32)
   SYSTEM_INFO sysinfo;
   GetSystemInfo(&sysinfo);
@@ -1338,11 +1356,12 @@ int cpu_processor_count() {
   #elif defined(__sun)
   numcpus = (int)strtol(read_output("psrinfo -v -p | grep 'The physical processor has ' | awk '{print $5}'").c_str(), nullptr, 10);
   #endif
-  if (numcpus > 0)
-    return numcpus;
+  if (!numcpus)
+    numcpus = -1;
+  if (numcpus != -1)
+    return std::to_string(numcpus);
   numcpuserror = true;
-  numcpus = -1;
-  return numcpus;
+  return pointer_null();
 }
 
 } // namespace ngs::sys
