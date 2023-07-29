@@ -983,7 +983,10 @@ std::string gpu_manufacturer() {
     return gpuvendor;
   #elif (!defined(__APPLE__) && !defined(__MACH__))
   #if defined(CREATE_CONTEXT)
-  create_context();
+  if (!create_context()) {
+    gpuvendorerror = true;
+    return gpuvendor;
+  }
   #endif
   #if defined(__sun)
   unsigned identifier = 0;
@@ -1050,7 +1053,10 @@ std::string gpu_renderer() {
   }
   #elif (!defined(__APPLE__) && !defined(__MACH__))
   #if defined(CREATE_CONTEXT)
-  create_context();
+  if (!create_context()) {
+    gpurenderererror = true;
+    return gpurenderer;
+  }
   #endif
   #if defined(__sun)
   unsigned identifier = 0;
@@ -1107,7 +1113,11 @@ std::string memory_totalvram(bool human_readable) {
   videomemory = strtoll(read_output("ioreg -r -d 1 -w 0 -c \"IOAccelerator\" | grep '\"VRAM,totalMB\"' | uniq | awk -F '= ' '{print $2}'").c_str(), nullptr, 10) * 1024 * 1024;
   #else
   #if defined(CREATE_CONTEXT)
-  create_context();
+  if (!create_context()) {
+    videomemoryerror = true;
+    videomemory = -1;
+    return human_readable ? make_hreadable(videomemory) : std::to_string(videomemory);
+  }
   #endif
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
