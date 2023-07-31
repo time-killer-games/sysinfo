@@ -183,7 +183,7 @@ bool create_context() {
   if (!window) {
     SDL_setenv("SDL_VIDEODRIVER", "x11", 1);
     SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-    if (SDL_Init(SDL_INIT_VIDEO)) 
+    if (SDL_Init(SDL_INIT_VIDEO))
       return false;
     window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
     if (!window) 
@@ -273,9 +273,8 @@ static std::string read_output(std::string cmd) {
     }
     // remove trailing whitespace and newlines we do not need in return strings
     while (!result.empty() && (result.back() == ' ' || result.back() == '\t' ||
-      result.back() == '\r' || result.back() == '\n')) {
+      result.back() == '\r' || result.back() == '\n'))
       result.pop_back();
-    }
     pclose(fp);
   }
   #endif
