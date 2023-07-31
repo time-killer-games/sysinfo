@@ -40,10 +40,9 @@ int main() {
   "OS PRODUCT NAME: " << os_product_name() << "\n" <<
   "OS KERNEL NAME: " << os_kernel_name() << "\n" <<
   "OS KERNEL RELEASE: " << os_kernel_release() << "\n" <<
-  "OS KERNEL VERSION: " << os_kernel_version() << "\n" <<
   "OS ARCHITECTURE: " << os_architecture() << "\n" <<
-  "CPU VENDOR: " << cpu_vendor() << "\n" <<
   "CPU PROCESSOR: " << cpu_processor() << "\n" <<
+  "CPU VENDOR: " << cpu_vendor() << "\n" <<
   "CPU CORE COUNT: " << cpu_core_count() << "\n" <<
   "CPU PROCESSOR COUNT: " << cpu_processor_count() << "\n" <<
   "RANDOM-ACCESS MEMORY TOTAL: " << memory_totalram(true) << "\n" <<
