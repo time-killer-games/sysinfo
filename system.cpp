@@ -692,7 +692,9 @@ std::string memory_totalram(bool human_readable) {
   #elif defined(__sun)
   totalram = strtoll(read_output("prtconf | grep 'Memory size:' | uniq | cut -d' ' -f3- | awk '{print $1 * 1024};'").c_str(), nullptr, 10) * 1024;
   #endif
-  if (totalram > 0)
+  if (!totalram)
+    totalram = -1;
+  if (totalram != -1)
     return human_readable ? make_hreadable(totalram) : std::to_string(totalram);
   totalramerror = true;
   return pointer_null();
@@ -737,7 +739,7 @@ std::string memory_usedram(bool human_readable) {
   statex.dwLength = sizeof(statex);
   if (GlobalMemoryStatusEx(&statex))
     usedram = (long long)(statex.ullTotalPhys - statex.ullAvailPhys);
-  #elif ((defined(__APPLE__) && defined(__MACH__)) ||defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
+  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
   long long total = strtoull(memory_totalram(false).c_str(), nullptr, 10);
   long long avail = strtoull(memory_freeram(false).c_str(), nullptr, 10);
   if (total != -1 && avail != -1)
@@ -1341,8 +1343,10 @@ std::string cpu_core_count() {
   int numsmt = 0;
   bool ishtt = cpuid1.edx() & avx_pos;
   numcpus = (int)strtol(((cpu_processor_count() != pointer_null()) ? cpu_processor_count().c_str() : "0"), nullptr, 10);
-  if (!numcpus)
-    numcpus = -1;
+  if (!numcpus) {
+    numcoreserror = true;
+    return pointer_null();
+  }
   if (tmp2.find("INTEL") != std::string::npos) {
     if(hfs >= 11) {
       cpuid cpuid4(0x0B, 0);
@@ -1350,35 +1354,29 @@ std::string cpu_core_count() {
       numcores = numcpus / numsmt;
     } else {
       if (hfs >= 1) {
-        if (hfs >= 4) {
+        if (hfs >= 4)
           numcores = 1 + (cpuid(4, 0).eax() >> 26) & 0x3F;
-        }
       }
       if (ishtt) {
-        if (numcores < 1) {
+        if (numcores < 1)
           numcores = 1;
-        }
-      } else {
+      } else
         numcores = 1;
-      }
     }
   } else if (tmp2.find("AMD") != std::string::npos) {
     numsmt = 1 + ((cpuid(0x8000001E, 0).ebx() >> 8) & 0xFF);
-    if (numcpus > 0 && numsmt > 0) {
+    if (numcpus > 0 && numsmt > 0)
       numcores = numcpus / numsmt;
-    } else {
+    else {
       if (hfs >= 1) {
-        if (cpuid(0x80000000, 0).eax() >= 8) {
+        if (cpuid(0x80000000, 0).eax() >= 8)
           numcores = 1 + (cpuid(0x80000008, 0).ecx() & 0xFF);
-        }
       }
       if (ishtt) {
-        if (numcores < 1) {
+        if (numcores < 1)
           numcores = 1;
-        }
-      } else {
+      } else
         numcores = 1;
-      }
     }
   }
   #endif
