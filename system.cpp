@@ -747,7 +747,7 @@ std::string memory_usedram(bool human_readable) {
   if (!sysinfo(&info))
     usedram = ((info.totalram - info.freeram) * info.mem_unit);
   #endif
-  if (usedram)
+  if (usedram != -1)
     return human_readable ? make_hreadable(usedram) : std::to_string(usedram);
   if (usedramerror)
     return pointer_null();
@@ -834,7 +834,7 @@ again:
     totalswap = total;
   }
   #endif
-  if (totalswap)
+  if (totalswap != -1)
     return human_readable ? make_hreadable(totalswap) : std::to_string(totalswap);
   if (totalswaperror)
     return pointer_null();
