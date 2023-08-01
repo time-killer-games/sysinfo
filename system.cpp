@@ -152,6 +152,8 @@ bool numcpuserror = false;
 long long totalram = -1;
 bool totalramerror = false;
 
+std::string wine_version;
+
 struct hreadable {
   long double size = 0;
   private: friend
@@ -209,6 +211,19 @@ void message_pump() {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
+}
+
+std::string wine_get_version() {
+  if (!wine_version.empty())
+    return wine_version;
+  static const char *(CDECL *pwine_get_version)(void);
+  HMODULE hntdll = GetModuleHandle("ntdll.dll");
+  if (!hntdll)
+    return pointer_null();
+  pwine_get_version = (const char* (*)())GetProcAddress(hntdll, "wine_get_version");
+  if (!pwine_get_version)
+    return pointer_null();
+  return pwine_get_version();
 }
 #endif
 
@@ -513,6 +528,18 @@ std::string os_kernel_release() {
   }
   allocate_windows_version_number_and_product_name();
   kernelrelease = windows_version_number;
+  wine_version = wine_get_version();
+  if (wine_version != pointer_null()) {
+    std::string tmp = os_kernel_version();
+    if (!tmp.empty()) {
+      tmp = std::regex_replace(tmp, std::regex("Microsoft Windows "), "");
+      tmp = std::regex_replace(tmp, std::regex("v"), "");
+      tmp = std::regex_replace(tmp, std::regex("V"), "");
+      tmp = std::regex_replace(tmp, std::regex("\\["), "");
+      tmp = std::regex_replace(tmp, std::regex("\\]"), "");
+      kernelrelease = tmp;
+    }
+  }
   #endif
   if (!kernelrelease.empty())
     return kernelrelease;
@@ -576,6 +603,10 @@ std::string os_product_name() {
   }
   allocate_windows_version_number_and_product_name();
   productname = windows_product_name;
+  wine_version = wine_get_version();
+  if (wine_version != pointer_null()) {
+    productname = "wine-" + wine_version;
+  }
   #elif (defined(__APPLE__) && defined(__MACH__))
   std::string tmp1 = read_output("echo $(sw_vers | grep 'ProductName:' | uniq | awk 'NR==1{$1=$1;print}' && sw_vers | grep 'ProductVersion:' | uniq | awk 'NR==1{$1=$1;print}')");
   if (!tmp1.empty()) {
@@ -1292,6 +1323,7 @@ std::string cpu_core_count() {
   #elif defined(__DragonFly__)
   int threads_per_core = (int)strtol(read_output("dmesg | grep 'threads_per_core: ' | awk '{print substr($6, 0, length($6) - 1)}'").c_str(), nullptr, 10);
   numcores = (int)(strtol(((cpu_processor_count() != pointer_null()) ? cpu_processor_count().c_str() : "0"), nullptr, 10) / ((threads_per_core) ? threads_per_core : 1));
+  #endif
   #if (defined(_WIN32) || defined(__NetBSD__) || defined(__OpenBSD__))
   #if defined(_WIN32)
   /* use x86-specific inline assembly as the fallback; 
@@ -1377,7 +1409,7 @@ std::string cpu_core_count() {
     }
   }
   #endif
-  #elif defined(__sun)
+  #if defined(__sun)
   numcores = (int)strtol(read_output("echo `expr $(kstat cpu_info | grep 'pkg_core_id' | uniq | wc -l | awk '{print $1}') / $(psrinfo -p)`").c_str(), nullptr, 10);
   #endif
   if (!numcores)
