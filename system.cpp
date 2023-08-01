@@ -631,7 +631,7 @@ std::string os_product_name() {
 std::string os_architecture() {
   if (!architecture.empty())
     return architecture;
-  if (architectureerrorerror)
+  if (architectureerror)
     return pointer_null();
   #if !defined(_WIN32)
   #if !defined(__sun)
@@ -728,8 +728,7 @@ std::string memory_freeram(bool human_readable) {
   #endif
   if (freeram != -1)
     return human_readable ? make_hreadable(freeram) : std::to_string(freeram);
-  if (freeramerror)
-    return pointer_null();
+  return pointer_null();
 }
 
 std::string memory_usedram(bool human_readable) {
@@ -751,8 +750,7 @@ std::string memory_usedram(bool human_readable) {
   #endif
   if (usedram != -1)
     return human_readable ? make_hreadable(usedram) : std::to_string(usedram);
-  if (usedramerror)
-    return pointer_null();
+  return pointer_null();
 }
 
 std::string memory_totalswap(bool human_readable) {
@@ -838,8 +836,7 @@ again:
   #endif
   if (totalswap != -1)
     return human_readable ? make_hreadable(totalswap) : std::to_string(totalswap);
-  if (totalswaperror)
-    return pointer_null();
+  return pointer_null();
 }
 
 std::string memory_freeswap(bool human_readable) {
