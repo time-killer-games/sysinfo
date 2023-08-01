@@ -1009,8 +1009,7 @@ again:
   #endif
   if (usedswap != -1)
     return human_readable ? make_hreadable(usedswap) : std::to_string(usedswap);
-  if (totalswaperror)
-    return pointer_null();
+  return pointer_null();
 }
 
 std::string gpu_manufacturer() {
