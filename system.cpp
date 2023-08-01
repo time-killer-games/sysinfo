@@ -922,8 +922,7 @@ again:
   #endif
   if (freeswap != -1)
     return human_readable ? make_hreadable(freeswap) : std::to_string(freeswap);
-  if (freeswaperror)
-    return pointer_null();
+  return pointer_null();
 }
 
 std::string memory_usedswap(bool human_readable) {
