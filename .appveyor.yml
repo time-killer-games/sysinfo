@@ -1,6 +1,6 @@
 build_script:
   - set PATH=C:\projects\ween-win32;C:\msys64;C:\msys64\mingw64\bin;C:\msys64\usr\local\bin;C:\msys64\usr\bin;%PATH%
-  - C:\msys64\msys2_shell.cmd -defterm -mingw32 -no-start -here -lc "yes | LC_ALL=en_US.UTF-8 pacman -Sy mingw-w64-i686-SDL2"
-  - C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -here -lc "yes | LC_ALL=en_US.UTF-8 pacman -Sy mingw-w64-x86_64-SDL2"
+  - C:\msys64\msys2_shell.cmd -defterm -mingw32 -no-start -here -lc "yes | LC_ALL=en_US.UTF-8 pacman -Sy mingw-w64 mingw-w64-common mingw-w64-tools mingw-w64-i686-dev"
+  - C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -here -lc "yes | LC_ALL=en_US.UTF-8 pacman -Sy mingw-w64 mingw-w64-common mingw-w64-tools mingw-w64-x86-64-dev"
   - C:\msys64\msys2_shell.cmd -defterm -mingw32 -no-start -here -lc "sh C:/projects/ween-win32/build.sh"
   - C:\msys64\msys2_shell.cmd -defterm -mingw64 -no-start -here -lc "sh C:/projects/ween-win32/build.sh"
