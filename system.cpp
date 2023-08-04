@@ -743,8 +743,13 @@ std::string memory_freeram(bool human_readable) {
   statex.dwLength = sizeof(statex);
   if (GlobalMemoryStatusEx(&statex))
     freeram = (long long)statex.ullAvailPhys;
-  #elif (defined(__APPLE__) && defined(__MACH__))
-  freeram = strtoll(read_output("sysctl -n hw.usermem").c_str(), nullptr, 10);
+  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__))
+  std::string strtotal = memory_totalram(false);
+  std::string strused = memory_usedram(false);
+  long long total = ((strtotal != pointer_null()) ? strtoull(strtotal.c_str(), nullptr, 10) : -1);
+  long long used = ((strused != pointer_null()) ? strtoull(strused.c_str(), nullptr, 10) : -1);
+  if (total != -1 && used != -1)
+    freeram = total - used;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   long long buf = -1;
@@ -757,13 +762,6 @@ std::string memory_freeram(bool human_readable) {
   struct sysinfo info;
   if (!sysinfo(&info))
     freeram = (info.freeram * info.mem_unit);
-  #elif (defined(__FreeBSD__) || defined(__DragonFly__))
-  std::string strtotal = memory_totalram(false);
-  std::string strused = memory_usedram(false);
-  long long total = ((strtotal != pointer_null()) ? strtoull(strtotal.c_str(), nullptr, 10) : -1);
-  long long used = ((strused != pointer_null()) ? strtoull(strused.c_str(), nullptr, 10) : -1);
-  if (total != -1 && used != -1)
-    freeram = total - used;
   #elif defined(__sun)
   freeram = (sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE));
   #endif
