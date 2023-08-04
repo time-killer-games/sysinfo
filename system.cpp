@@ -675,11 +675,11 @@ std::string os_architecture() {
   str = read_output("uname -m");
   return str;
   #else
-  long count = sysinfo(SI_ARCHITECTURE_NATIVE, nullptr, 0);
+  long count = sysinfo(SI_ARCHITECTURE_K, nullptr, 0);
   if (count > 0) {
     char *buf = (char *)calloc(count, sizeof(char));
     if (buf) {
-      if (sysinfo(SI_ARCHITECTURE_NATIVE, buf, count) > 0)
+      if (sysinfo(SI_ARCHITECTURE_K, buf, count) > 0)
         architecture = buf;
       free(buf);
     }
