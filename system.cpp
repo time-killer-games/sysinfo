@@ -744,7 +744,6 @@ std::string memory_freeram(bool human_readable) {
   if (GlobalMemoryStatusEx(&statex))
     freeram = (long long)statex.ullAvailPhys;
   #elif (defined(__APPLE__) && defined(__MACH__))
-  // FIXME
   freeram = strtoll(read_output("sysctl -n hw.usermem").c_str(), nullptr, 10);
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
@@ -780,7 +779,10 @@ std::string memory_usedram(bool human_readable) {
   statex.dwLength = sizeof(statex);
   if (GlobalMemoryStatusEx(&statex))
     usedram = (long long)(statex.ullTotalPhys - statex.ullAvailPhys);
-  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
+  #elif (defined(__APPLE__) && defined(__MACH__))
+  usedram = strtoll(read_output("echo $(($(vm_stat | grep -o 'Pages wired down:.*'  | cut -d' ' -f4- | awk '{print substr($1, 1, length($1)-1)}') + \
+  $(vm_stat | grep -o 'Pages active:.*'  | cut -d' ' -f3- | awk '{print substr($1, 1, length($1)-1)}')))").c_str(), nullptr, 10) * sysconf(_SC_PAGESIZE);
+  #elif (defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
   std::string strtotal = memory_totalram(false);
   std::string stravail = memory_freeram(false);
   long long total = ((strtotal != pointer_null()) ? strtoull(strtotal.c_str(), nullptr, 10) : -1);
