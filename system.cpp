@@ -672,7 +672,7 @@ std::string os_architecture() {
   /* utsname.machine equals the achitecture of the 
   current executable - not the current platform */
   static std::string str;
-  str = read_output("uname -p");
+  str = read_output("uname -m");
   return str;
   #else
   long count = sysinfo(SI_ARCHITECTURE_NATIVE, nullptr, 0);
