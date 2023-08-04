@@ -707,15 +707,11 @@ std::string memory_totalram(bool human_readable) {
   statex.dwLength = sizeof(statex);
   if (GlobalMemoryStatusEx(&statex))
     totalram = (long long)statex.ullTotalPhys;
-  #elif ((defined(__APPLE__) && defined(__MACH__)) || defined(__NetBSD__) || defined(__OpenBSD__))
+  #elif (defined(__APPLE__) && defined(__MACH__))
   int mib[2];
   long long buf = -1;
   mib[0] = CTL_HW;
-  #if (defined(__APPLE__) && defined(__MACH__))
   mib[1] = HW_MEMSIZE;
-  #elif (defined(__NetBSD__) || defined(__OpenBSD__))
-  mib[1] = HW_PHYSMEM64;
-  #endif
   std::size_t sz = sizeof(long long);
   if (!sysctl(mib, 2, &buf, &sz, nullptr, 0))
     totalram = buf;
@@ -725,6 +721,14 @@ std::string memory_totalram(bool human_readable) {
     totalram = (info.totalram * info.mem_unit);
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   totalram = strtoll(read_output("sysctl -n hw.physmem").c_str(), nullptr, 10);
+  #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+  int mib[2];
+  mib[0] = CTL_VM;
+  mib[1] = VM_UVMEXP;
+  struct uvmexp buf;
+  std::size_t sz = sizeof(buf);
+  if (!sysctl(mib, 2, &buf, &sz, nullptr, 0))
+    totalram = buf.npages * sysconf(_SC_PAGESIZE);
   #elif defined(__sun)
   totalram = strtoll(read_output("prtconf | grep 'Memory size:' | uniq | cut -d' ' -f3- | awk '{print $1 * 1024};'").c_str(), nullptr, 10) * 1024;
   #endif
@@ -752,12 +756,12 @@ std::string memory_freeram(bool human_readable) {
     freeram = total - used;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
-  long long buf = -1;
-  mib[0] = CTL_HW;
-  mib[1] = HW_USERMEM64;
-  std::size_t sz = sizeof(long long);
+  mib[0] = CTL_VM;
+  mib[1] = VM_UVMEXP;
+  struct uvmexp buf;
+  std::size_t sz = sizeof(buf);
   if (!sysctl(mib, 2, &buf, &sz, nullptr, 0))
-    freeram = buf;
+    freeram = buf.free * sysconf(_SC_PAGESIZE);
   #elif defined(__linux__)
   struct sysinfo info;
   if (!sysinfo(&info))
