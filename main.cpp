@@ -25,6 +25,16 @@
 */
 
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#if defined(_WIN32)
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
 
 #include "system.hpp"
 
@@ -35,24 +45,39 @@
 using namespace ngs::sys;
 
 int main() {
-  std::cout <<
-  "OS DEVICE NAME: " << os_device_name() << "\n" <<
-  "OS PRODUCT NAME: " << os_product_name() << "\n" <<
-  "OS KERNEL NAME: " << os_kernel_name() << "\n" <<
-  "OS KERNEL RELEASE: " << os_kernel_release() << "\n" <<
-  "OS ARCHITECTURE: " << os_architecture() << "\n" <<
-  "CPU PROCESSOR: " << cpu_processor() << "\n" <<
-  "CPU VENDOR: " << cpu_vendor() << "\n" <<
-  "CPU CORE COUNT: " << cpu_core_count() << "\n" <<
-  "CPU PROCESSOR COUNT: " << cpu_processor_count() << "\n" <<
-  "RANDOM-ACCESS MEMORY TOTAL: " << memory_totalram(true) << "\n" <<
-  "RANDOM-ACCESS MEMORY USED: " << memory_usedram(true) << "\n" <<
-  "RANDOM-ACCESS MEMORY FREE: " << memory_freeram(true) << "\n" <<
-  "SWAP MEMORY TOTAL: " << memory_totalswap(true) << "\n" <<
-  "SWAP MEMORY USED: " << memory_usedswap(true) << "\n" <<
-  "SWAP MEMORY FREE: " << memory_freeswap(true) << "\n" <<
-  "GPU MANUFACTURER: " << gpu_manufacturer() << "\n" <<
-  "GPU RENDERER: " << gpu_renderer() << "\n" <<
-  "GPU MEMORY: " << memory_totalvram(true) << "\n";
+  for (int i = 0; i < 100; i++) {
+    if (system(nullptr)) {
+      if (getenv("SHELL"))
+        system("clear");
+      else
+        system("cls");
+    }
+    std::string str = "\
+OS DEVICE NAME: " + os_device_name() + "\n\
+OS PRODUCT NAME: " + os_product_name() + "\n\
+OS KERNEL NAME: " + os_kernel_name() + "\n\
+OS KERNEL RELEASE: " + os_kernel_release() + "\n\
+OS ARCHITECTURE: " + os_architecture() + "\n\
+CPU PROCESSOR: " + cpu_processor() + "\n\
+CPU VENDOR: " + cpu_vendor() + "\n\
+CPU CORE COUNT: " + cpu_core_count() + "\n\
+CPU PROCESSOR COUNT: " + cpu_processor_count() + "\n\
+RANDOM-ACCESS MEMORY TOTAL: " + memory_totalram(true) + "\n\
+RANDOM-ACCESS MEMORY USED: " + memory_usedram(true) + "\n\
+RANDOM-ACCESS MEMORY FREE: " + memory_freeram(true) + "\n\
+SWAP MEMORY TOTAL: " + memory_totalswap(true) + "\n\
+SWAP MEMORY USED: " + memory_usedswap(true) + "\n\
+SWAP MEMORY FREE: " + memory_freeswap(true) + "\n\
+GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
+GPU RENDERER: " + gpu_renderer() + "\n\
+GPU MEMORY: " + memory_totalvram(true);
+    std::vector<char> vec(str.begin(), str.end());
+	#if defined(_WIN32)
+    _write(1, &vec[0], vec.size());
+	#else
+	write(1, &vec[0], vec.size());
+    #endif
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  }
   return 0;
 }
