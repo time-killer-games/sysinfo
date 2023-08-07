@@ -70,7 +70,7 @@ SWAP MEMORY USED: " + memory_usedswap(true) + "\n\
 SWAP MEMORY FREE: " + memory_freeswap(true) + "\n\
 GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
 GPU RENDERER: " + gpu_renderer() + "\n\
-GPU MEMORY: " + memory_totalvram(true);
+GPU MEMORY: " + memory_totalvram(true) + "\n";
     std::vector<char> vec(str.begin(), str.end());
     #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
