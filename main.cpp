@@ -72,10 +72,10 @@ GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
 GPU RENDERER: " + gpu_renderer() + "\n\
 GPU MEMORY: " + memory_totalvram(true);
     std::vector<char> vec(str.begin(), str.end());
-	#if defined(_WIN32)
+    #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
-	#else
-	write(1, &vec[0], vec.size());
+    #else
+    write(1, &vec[0], vec.size());
     #endif
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
