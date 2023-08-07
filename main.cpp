@@ -25,18 +25,20 @@
 */
 
 #include <iostream>
-#include <thread>
 #include <chrono>
+#include <thread>
 #include <string>
 #include <vector>
 #include <cstdlib>
+
+#include "system.hpp"
+
 #if defined(_WIN32)
+#include <windows.h>
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
-
-#include "system.hpp"
 
 #if defined(_WIN32)
 #undef main
@@ -47,7 +49,8 @@ using namespace ngs::sys;
 int main() {
   for (int i = 0; i < 100; i++) {
     if (system(nullptr)) {
-      if (getenv("SHELL"))
+      if (getenv("SHELL") && 
+        os_product_name().find("wine") == std::string::npos)
         system("clear");
       else
         system("cls");
@@ -74,10 +77,11 @@ GPU MEMORY: " + memory_totalvram(true) + "\n";
     std::vector<char> vec(str.begin(), str.end());
     #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
+    Sleep(500);
     #else
     write(1, &vec[0], vec.size());
-    #endif
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    #endif
   }
   return 0;
 }
