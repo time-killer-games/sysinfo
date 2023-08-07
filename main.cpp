@@ -29,12 +29,16 @@
 #include <thread>
 #include <string>
 #include <vector>
+
+#include <cstdio>
 #include <cstdlib>
 
 #include "system.hpp"
 
 #if defined(_WIN32)
 #include <windows.h>
+#include <process.h>
+#include <conio.h>
 #include <io.h>
 #else
 #include <unistd.h>
@@ -46,15 +50,30 @@
 
 using namespace ngs::sys;
 
+void clear() {
+  if (system(nullptr)) {
+    if (getenv("SHELL") && 
+      os_product_name().find("wine") == std::string::npos)
+      system("clear");
+    else
+      system("cls");
+  }
+}
+
+void thread(void *args) {
+  while (getchar() != '\n');
+  clear();
+  exit(0);
+}
+
 int main() {
-  for (int i = 0; i < 100; i++) {
-    if (system(nullptr)) {
-      if (getenv("SHELL") && 
-        os_product_name().find("wine") == std::string::npos)
-        system("clear");
-      else
-        system("cls");
-    }
+  #if defined(_WIN32)
+  _beginthread(thread, 0, nullptr);
+  #else
+  std::thread(thread, nullptr).detach();
+  #endif
+  while (true) {
+    clear();
     std::string str = "\
 OS DEVICE NAME: " + os_device_name() + "\n\
 OS PRODUCT NAME: " + os_product_name() + "\n\
