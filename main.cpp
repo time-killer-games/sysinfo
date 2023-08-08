@@ -66,7 +66,10 @@ void thread(void *args) {
   exit(0);
 }
 
-int main() {
+int main(int argc, char **argv) {
+  bool human_readable = false;
+  if (argc == 2 && strlen(argv[1]) == 2 && argv[1][0] == '-' && argv[1][1] == 'h')
+    human_readable = true;
   #if defined(_WIN32)
   _beginthread(thread, 0, nullptr);
   #else
@@ -84,15 +87,15 @@ CPU PROCESSOR: " + cpu_processor() + "\n\
 CPU VENDOR: " + cpu_vendor() + "\n\
 CPU CORE COUNT: " + cpu_core_count() + "\n\
 CPU PROCESSOR COUNT: " + cpu_processor_count() + "\n\
-RANDOM-ACCESS MEMORY TOTAL: " + memory_totalram(true) + "\n\
-RANDOM-ACCESS MEMORY USED: " + memory_usedram(true) + "\n\
-RANDOM-ACCESS MEMORY FREE: " + memory_freeram(true) + "\n\
-SWAP MEMORY TOTAL: " + memory_totalswap(true) + "\n\
-SWAP MEMORY USED: " + memory_usedswap(true) + "\n\
-SWAP MEMORY FREE: " + memory_freeswap(true) + "\n\
+RANDOM-ACCESS MEMORY TOTAL: " + ((memory_totalram(human_readable) != "(null)") ? (memory_totalram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
+RANDOM-ACCESS MEMORY USED: " + ((memory_usedram(human_readable) != "(null)") ? (memory_usedram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
+RANDOM-ACCESS MEMORY FREE: " + ((memory_freeram(human_readable) != "(null)") ? (memory_freeram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
+SWAP MEMORY TOTAL: " + ((memory_totalswap(human_readable) != "(null)") ? (memory_totalswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
+SWAP MEMORY USED: " + ((memory_usedswap(human_readable) != "(null)") ? (memory_usedswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
+SWAP MEMORY FREE: " + ((memory_freeswap(human_readable) != "(null)") ? (memory_freeswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
 GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
 GPU RENDERER: " + gpu_renderer() + "\n\
-GPU MEMORY: " + memory_totalvram(true) + "\n";
+GPU MEMORY: " + ((memory_totalvram(human_readable) != "(null)") ? (memory_totalvram(human_readable) + ((human_readable) ? "" : " B")) : "(null)");
     std::vector<char> vec(str.begin(), str.end());
     #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
