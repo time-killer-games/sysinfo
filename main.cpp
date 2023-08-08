@@ -31,6 +31,7 @@
 #include <vector>
 
 #include <cstdio>
+#include <cstring>
 #include <cstdlib>
 
 #include "system.hpp"
