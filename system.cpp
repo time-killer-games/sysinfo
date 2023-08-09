@@ -67,6 +67,9 @@
 #include <fcntl.h>
 #include <kvm.h>
 #elif (defined(__NetBSD__) || defined(__OpenBSD__))
+#if defined(__NetBSD__)
+#include <uvm/uvm_extern.h>
+#endif
 #include <sys/param.h>
 #include <sys/swap.h>
 #endif
