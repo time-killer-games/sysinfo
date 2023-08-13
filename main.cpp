@@ -51,6 +51,8 @@
 
 using namespace ngs::sys;
 
+#define memory_unified ((memory_totalswap(human_readable) != "(null)") ? (memory_totalswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)")
+
 void clear() {
   if (system(nullptr)) {
     if (getenv("SHELL") && 
@@ -96,7 +98,7 @@ SWAP MEMORY USED: " + ((memory_usedswap(human_readable) != "(null)") ? (memory_u
 SWAP MEMORY FREE: " + ((memory_freeswap(human_readable) != "(null)") ? (memory_freeswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
 GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
 GPU RENDERER: " + gpu_renderer() + "\n\
-GPU MEMORY: " + ((memory_totalvram(human_readable) != "(null)") ? (memory_totalvram(human_readable) + ((human_readable) ? "" : " B")) : "(null)");
+GPU MEMORY: " + ((memory_totalvram(human_readable) != "(null)") ? (memory_totalvram(human_readable) + ((human_readable) ? "" : " B")) : memory_unified);
     std::vector<char> vec(str.begin(), str.end());
     #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
