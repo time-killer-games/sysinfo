@@ -51,7 +51,8 @@
 
 using namespace ngs::sys;
 
-#define memory_unified ((memory_totalram(human_readable) != "(null)") ? (memory_totalram(human_readable) + ((human_readable) ? "" : " B")) : "(null)")
+#define memory_unified ((gpu_manufacturer() != "(null)" && gpu_renderer() != "(null)" && \
+memory_totalram(human_readable) != "(null)") ? (memory_totalram(human_readable) + ((human_readable) ? "" : " B")) : "(null)")
 
 void clear() {
   if (system(nullptr)) {
