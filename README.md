@@ -5,6 +5,6 @@ the crust is elusive when it cast forth to the child-like man
 
 ![macOS](https://github.com/time-killer-games/ween/raw/main/macos-intel.png "macOS (Intel)")
 
-![macOS](https://github.com/time-killer-games/ween/raw/main/macos-arm64.png "macOS (ARM64)")
+![macOS](https://github.com/time-killer-games/ween/raw/main/macos-arm64.png "macOS (arm64)")
 
 ![Linux](https://github.com/time-killer-games/ween/raw/main/linux.png "Linux")
