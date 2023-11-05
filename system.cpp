@@ -727,8 +727,8 @@ std::string memory_totalram(bool human_readable) {
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   long page_s = sysconf(_SC_PAGESIZE);
   unsigned long long tram = 0;
-  len = sizeof(tram);
-  if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &len, nullptr, 0) < 0)
+  sz = sizeof(tram);
+  if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &sz, nullptr, 0) < 0)
     return pointer_null();
   if ((tram * page_s))
     totalram = tram * page_s;
@@ -774,8 +774,8 @@ std::string memory_freeram(bool human_readable) {
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   long page_s = sysconf(_SC_PAGESIZE);
   unsigned long long fram = 0;
-  len = sizeof(fram);
-  if (sysctlbyname("vm.stats.vm.v_free_count", &fram, &len, nullptr, 0) < 0)
+  std::size_t sz = sizeof(fram);
+  if (sysctlbyname("vm.stats.vm.v_free_count", &fram, &sz, nullptr, 0) < 0)
     return pointer_null();
   if ((fram * page_s))
     freeram = fram * page_s;
