@@ -731,7 +731,7 @@ std::string memory_totalram(bool human_readable) {
   if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &len, nullptr, 0) < 0)
     return pointer_null();
   if ((tram * page_s))
-    totalram tram * page_s;
+    totalram = tram * page_s;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   mib[0] = CTL_VM;
