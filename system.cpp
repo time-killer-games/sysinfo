@@ -726,12 +726,12 @@ std::string memory_totalram(bool human_readable) {
     totalram = (info.totalram * info.mem_unit);
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   long page_s = sysconf(_SC_PAGESIZE);
-  unsigned long long totalram = 0;
-  len = sizeof(totalram);
-  if (sysctlbyname("vm.stats.vm.v_page_count", &totalram, &len, nullptr, 0) < 0)
+  unsigned long long tram = 0;
+  len = sizeof(tram);
+  if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &len, nullptr, 0) < 0)
     return pointer_null();
-  if ((totalram * page_s))
-    totalram totalram * page_s;
+  if ((tram * page_s))
+    totalram tram * page_s;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   mib[0] = CTL_VM;
@@ -773,12 +773,12 @@ std::string memory_freeram(bool human_readable) {
     freeram = (info.freeram * info.mem_unit);
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   long page_s = sysconf(_SC_PAGESIZE);
-  unsigned long long freeram = 0;
-  len = sizeof(freeram);
-  if (sysctlbyname("vm.stats.vm.v_free_count", &freeram, &len, nullptr, 0) < 0)
+  unsigned long long fram = 0;
+  len = sizeof(fram);
+  if (sysctlbyname("vm.stats.vm.v_free_count", &fram, &len, nullptr, 0) < 0)
     return pointer_null();
-  if ((freeram * page_s))
-    freeram = freeram * page_s;
+  if ((fram * page_s))
+    freeram = fram * page_s;
   #elif (defined(__NetBSD__) || defined(__OpenBSD__))
   int mib[2];
   mib[0] = CTL_VM;
