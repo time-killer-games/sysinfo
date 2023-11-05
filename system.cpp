@@ -727,7 +727,7 @@ std::string memory_totalram(bool human_readable) {
   #elif (defined(__FreeBSD__) || defined(__DragonFly__))
   long page_s = sysconf(_SC_PAGESIZE);
   unsigned long long tram = 0;
-  sz = sizeof(tram);
+  std::size_t sz = sizeof(tram);
   if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &sz, nullptr, 0) < 0)
     return pointer_null();
   if ((tram * page_s))
