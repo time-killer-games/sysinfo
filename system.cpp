@@ -1134,6 +1134,10 @@ std::string gpu_manufacturer() {
   if (!gpuvendor.empty()) 
     return gpuvendor;
   gpuvendor = read_output("system_profiler SPDisplaysDataType | grep -i 'Vendor: ' | uniq | awk -F 'Vendor: ' 'NR==1{$1=$1;print}' | awk 'NR==1{$1=$1;print}'");
+  std::string tmp = gpuvendor;
+  std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
+  if (gpuvendor.empty() && tmp.find("APPLE") != std::string::npos)
+    gpuvendor = "Apple";
   if (!gpuvendor.empty()) 
     return gpuvendor;
   #endif
@@ -1286,7 +1290,7 @@ std::string cpu_vendor() {
   std::string tmp1 = cpu_processor();
   std::transform(tmp1.begin(), tmp1.end(), tmp1.begin(), ::toupper);
   if (cpuvendor.empty() && tmp1.find("APPLE") != std::string::npos)
-    cpuvendor = "Apple Inc.";
+    cpuvendor = "Apple";
   std::string tmp2 = os_architecture();
   std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::toupper);
   if (cpuvendor.empty() && (tmp2.find("ARM") != std::string::npos || 
