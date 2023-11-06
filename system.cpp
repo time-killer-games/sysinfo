@@ -1286,7 +1286,7 @@ std::string cpu_vendor() {
   std::string tmp1 = cpu_processor();
   std::transform(tmp1.begin(), tmp1.end(), tmp1.begin(), ::toupper);
   if (cpuvendor.empty() && tmp1.find("APPLE") != std::string::npos)
-    cpuvendor = "Apple";
+    cpuvendor = "Apple Inc.";
   std::string tmp2 = os_architecture();
   std::transform(tmp2.begin(), tmp2.end(), tmp2.begin(), ::toupper);
   if (cpuvendor.empty() && (tmp2.find("ARM") != std::string::npos || 
