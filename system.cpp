@@ -728,7 +728,7 @@ std::string memory_totalram(bool human_readable) {
   long page_s = sysconf(_SC_PAGESIZE);
   unsigned long long tram = 0;
   std::size_t sz = sizeof(tram);
-  if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &sz, nullptr, 0) < 0) {
+  if (sysctlbyname("vm.stats.vm.v_page_count", &tram, &sz, nullptr, 0)) {
     totalramerror = true;
     return pointer_null();
   }
@@ -776,7 +776,7 @@ std::string memory_freeram(bool human_readable) {
   long page_s = sysconf(_SC_PAGESIZE);
   unsigned long long fram = 0;
   std::size_t sz = sizeof(fram);
-  if (sysctlbyname("vm.stats.vm.v_free_count", &fram, &sz, nullptr, 0) < 0) {
+  if (sysctlbyname("vm.stats.vm.v_free_count", &fram, &sz, nullptr, 0)) {
     freeramerror = true;
     return pointer_null();
   }
