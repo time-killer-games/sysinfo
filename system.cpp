@@ -744,9 +744,9 @@ std::string os_is_virtual() {
     "bhyve bhyve ",      // bhyve
     "KVMKVMKVM\0\0\0",   // KVM
     "TCGTCGTCGTCG",      // QEMU
-   	#if !defined(_WIN32)
+    #if !defined(_WIN32)
     "Microsoft Hv",      // Microsoft Hyper-V or Windows Virtual PC
-   	#endif
+    #endif
     "MicrosoftXTA",      // Microsoft x86-to-ARM
     " lrpepyh  vr",      // Parallels
     "VMwareVMware",      // VMware
