@@ -87,6 +87,7 @@ OS PRODUCT NAME: " + os_product_name() + "\n\
 OS KERNEL NAME: " + os_kernel_name() + "\n\
 OS KERNEL RELEASE: " + os_kernel_release() + "\n\
 OS ARCHITECTURE: " + os_architecture() + "\n\
+OS IS VIRTUAL: " + os_is_virtual() + "\n\
 CPU PROCESSOR: " + cpu_processor() + "\n\
 CPU VENDOR: " + cpu_vendor() + "\n\
 CPU CORE COUNT: " + cpu_core_count() + "\n\
