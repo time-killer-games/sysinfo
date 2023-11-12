@@ -710,8 +710,6 @@ std::string os_is_virtual() {
   if (os_architecture() == "x86_64" && 
     read_output("sysctl -in sysctl.proc_translated") == "1")
     return "YES";
-  else
-    return "NO";
   #endif
   class cpuid {
     unsigned regs[4];
@@ -762,6 +760,8 @@ std::string os_is_virtual() {
       return "TRUE";
   }
   return "FALSE";
+  #elif (defined(__APPLE__) && defined(__MACH__))
+  return "YES";
   #endif
   // non-x86 currently not supported outside of macOS ...
   return pointer_null();
