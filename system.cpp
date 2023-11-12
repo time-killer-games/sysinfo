@@ -710,6 +710,8 @@ std::string os_is_virtual() {
   if (os_architecture() == "x86_64" && 
     read_output("sysctl -in sysctl.proc_translated") == "1")
     return "YES";
+  else
+    return "NO";
   #endif
   class cpuid {
     unsigned regs[4];
