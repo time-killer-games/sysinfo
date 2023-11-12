@@ -705,7 +705,7 @@ std::string os_architecture() {
 std::string os_is_virtual() {
   #if (defined(__x86_64__) || defined(_M_X64) || defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86))
   if (os_product_name().substr(0, 4) == "wine")
-    return true;
+    return "YES";
   #if (defined(__APPLE__) && defined(__MACH__))
   if (os_architecture() == "x86_64" && 
     read_output("sysctl -in sysctl.proc_translated") == "1")
