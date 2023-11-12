@@ -731,7 +731,7 @@ std::string os_is_virtual() {
     }
   };
   if (!(cpuid(1, 0).ecx() & (1 << 31)))
-    return "FALSE";
+    return "NO";
   const int vendorIdLength = 13;
   using VendorIdStr = char[vendorIdLength];
   VendorIdStr hyperVendorId;
@@ -757,11 +757,11 @@ std::string os_is_virtual() {
   };
   for (const auto& vendor : vendors) {
     if (!memcmp(vendor, hyperVendorId, vendorIdLength))
-      return "TRUE";
+      return "YES";
   }
-  return "FALSE";
+  return "NO";
   #elif (defined(__APPLE__) && defined(__MACH__))
-  return "YES";
+  return "NO";
   #endif
   // non-x86 currently not supported outside of macOS ...
   return pointer_null();
