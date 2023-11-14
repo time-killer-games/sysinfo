@@ -767,7 +767,7 @@ std::string os_is_virtual() {
   std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::toupper);
   if (tmp.empty()) 
     return pointer_null();
-  else if (tmp == "NONE"))
+  else if (tmp == "NONE")
     return "NO";
   return "YES";
   #endif
