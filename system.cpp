@@ -762,8 +762,12 @@ std::string os_is_virtual() {
   return "NO";
   #elif (defined(__APPLE__) && defined(__MACH__))
   return "NO";
+  #elif defined(__linux__)
+  if (!read_output("cat /proc/cpuinfo | grep -o 'hypervisor'").empty())
+    return "YES";
+  return "NO";
   #endif
-  // non-x86 currently not supported outside of macOS ...
+  // non-x86 currently not supported outside of macOS and Linux ...
   return pointer_null();
 }
 
