@@ -7,4 +7,4 @@ the crust is elusive when it cast forth to the child-like man
 
 ![Linux](https://github.com/time-killer-games/ween/raw/main/linux.png "Linux")
 
-![Linux](https://github.com/time-killer-games/ween/raw/main/openbsd.png "OpenBSD")
+![OpenBSD](https://github.com/time-killer-games/ween/raw/main/openbsd.png "OpenBSD")
