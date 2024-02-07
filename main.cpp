@@ -81,7 +81,6 @@ int main(int argc, char **argv) {
   #endif
   while (true) {
     clear();
-#if ((defined(_WIN32) || (defined(__APPLE__) && defined(__MACH__))) || defined(CREATE_CONTEXT))
     std::string str = "\
 OS DEVICE NAME: " + os_device_name() + "\n\
 OS PRODUCT NAME: " + os_product_name() + "\n\
@@ -102,25 +101,6 @@ SWAP MEMORY FREE: " + ((memory_freeswap(human_readable) != "(null)") ? (memory_f
 GPU MANUFACTURER: " + gpu_manufacturer() + "\n\
 GPU RENDERER: " + gpu_renderer() + "\n\
 GPU MEMORY: " + ((memory_totalvram(human_readable) != "(null)") ? (memory_totalvram(human_readable) + ((human_readable) ? "" : " B")) : memory_unified);
-#else
-    std::string str = "\
-OS DEVICE NAME: " + os_device_name() + "\n\
-OS PRODUCT NAME: " + os_product_name() + "\n\
-OS KERNEL NAME: " + os_kernel_name() + "\n\
-OS KERNEL RELEASE: " + os_kernel_release() + "\n\
-OS ARCHITECTURE: " + os_architecture() + "\n\
-OS IS VIRTUAL: " + ((os_is_virtual() != "(null)") ? os_is_virtual() : "NO") + "\n\
-CPU PROCESSOR: " + cpu_processor() + "\n\
-CPU VENDOR: " + cpu_vendor() + "\n\
-CPU CORE COUNT: " + cpu_core_count() + "\n\
-CPU PROCESSOR COUNT: " + cpu_processor_count() + "\n\
-RANDOM-ACCESS MEMORY TOTAL: " + ((memory_totalram(human_readable) != "(null)") ? (memory_totalram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
-RANDOM-ACCESS MEMORY USED: " + ((memory_usedram(human_readable) != "(null)") ? (memory_usedram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
-RANDOM-ACCESS MEMORY FREE: " + ((memory_freeram(human_readable) != "(null)") ? (memory_freeram(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
-SWAP MEMORY TOTAL: " + ((memory_totalswap(human_readable) != "(null)") ? (memory_totalswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
-SWAP MEMORY USED: " + ((memory_usedswap(human_readable) != "(null)") ? (memory_usedswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)") + "\n\
-SWAP MEMORY FREE: " + ((memory_freeswap(human_readable) != "(null)") ? (memory_freeswap(human_readable) + ((human_readable) ? "" : " B")) : "(null)");
-#endif
     std::vector<char> vec(str.begin(), str.end());
     #if defined(_WIN32)
     _write(1, &vec[0], vec.size());
