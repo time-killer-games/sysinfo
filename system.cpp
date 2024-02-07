@@ -46,11 +46,11 @@
 #if defined(CREATE_CONTEXT)
 #include <SDL.h>
 #include <SDL_opengl.h>
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
-#endif
 #endif
 #if defined(_WIN32)
 #include <winsock2.h>
@@ -1211,7 +1211,6 @@ std::string gpu_manufacturer() {
   if (!gpuvendor.empty())
     return gpuvendor;
   #endif
-  #if defined(CREATE_CONTEXT)
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
@@ -1225,7 +1224,6 @@ std::string gpu_manufacturer() {
   gpuvendor = vendor ? (char *)vendor : "";
   if (!gpuvendor.empty())
     return gpuvendor;
-  #endif
   #else
   unsigned identifier = 0;
   std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $1}'"));
@@ -1290,7 +1288,6 @@ std::string gpu_renderer() {
   if (!gpurenderer.empty())
     return gpurenderer;
   #endif
-  #if defined(CREATE_CONTEXT)
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
@@ -1304,7 +1301,6 @@ std::string gpu_renderer() {
   gpurenderer = renderer ? (char *)renderer : "";
   if (!gpurenderer.empty())
     return gpurenderer;
-  #endif
   #else
   unsigned identifier = 0;
   std::istringstream converter(read_output("ioreg -bls | grep -n2 '    | |   | |   \"model\" = <\"' | awk -F',\"pci' 'NR==5{print $2}' | rev | cut -c 2- | rev | awk -F',' '{print $2}'"));
@@ -1347,13 +1343,11 @@ std::string memory_totalvram(bool human_readable) {
     return pointer_null();
   }
   #endif
-  #if defined(CREATE_CONTEXT)
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
   queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, &v);
   videomemory = v * 1024 * 1024;
-  #endif
   #endif
   if (!videomemory)
     videomemory = -1;
