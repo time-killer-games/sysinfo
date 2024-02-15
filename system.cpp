@@ -804,7 +804,8 @@ std::string os_is_virtual() {
     "XenVMMXenVMM",      // Xen HVM
     "ACRNACRNACRN",      // Project ACRN
     " QNXQVMBSQG ",      // QNX Hypervisor
-    "VirtualApple"       // Apple Rosetta 2
+    "GenuineIntel",      // Apple Rosetta 2
+    "VirtualApple"       // Newer versions of Apple Rosetta 2
   };
   for (const auto& vendor : vendors) {
     if (!memcmp(vendor, hyperVendorId, vendorIdLength))
