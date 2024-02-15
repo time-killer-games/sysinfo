@@ -700,7 +700,13 @@ std::string os_architecture() {
   #if !defined(__sun)
   /* utsname.machine equals the achitecture of the 
   current executable - not the current platform */
+  #if (defined(__APPLE__) && defined(__MACH__))
+  /* macOS requires "arch -arch arm64" to 
+  force running without rosetta if x86 */
+  architecture = read_output("arch -arch arm64 uname -m");
+  #else
   architecture = read_output("uname -m");
+  #endif
   #else
   long count = sysinfo(SI_ARCHITECTURE_K, nullptr, 0);
   if (count > 0) {
