@@ -50,7 +50,9 @@
 #if !defined(__ANDROID__)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#endif
 #include <GL/gl.h>
+#if !defined(__ANDROID__)
 #include <GL/glx.h>
 #endif
 #endif
@@ -1259,7 +1261,9 @@ std::string gpu_manufacturer() {
   if (!gpuvendor.empty())
     return gpuvendor;
   #endif
-  #if !defined(__ANDROID__)
+  #if defined(__ANDROID__)
+  gpuvendor = glGetString(GL_VENDOR) ? std::string((char *)glGetString(GL_VENDOR)) : "";
+  #else
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
@@ -1338,7 +1342,9 @@ std::string gpu_renderer() {
   if (!gpurenderer.empty())
     return gpurenderer;
   #endif
-  #if !defined(__ANDROID__)
+  #if defined(__ANDROID__)
+  gpurenderer = glGetString(GL_RENDERER) ? std::string((char *)glGetString(GL_RENDERER)) : "";
+  #else
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
@@ -1395,7 +1401,8 @@ std::string memory_totalvram(bool human_readable) {
     return pointer_null();
   }
   #endif
-  #if !defined(__ANDROID__)
+  #if defined(__ANDROID__)
+  #else
   unsigned v = 0;
   PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
   queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)glXGetProcAddressARB((const GLubyte *)"glXQueryCurrentRendererIntegerMESA");
