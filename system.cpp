@@ -44,15 +44,20 @@
 #include <cmath>
 #if (!defined(_WIN32) && (!defined(__APPLE__) && !defined(__MACH__)))
 #if defined(CREATE_CONTEXT)
+#if defined(__ANDROID__)
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengles2.h>
+#else
 #include <SDL.h>
 #include <SDL_opengl.h>
 #endif
-#if !defined(__ANDROID__)
+#endif
+#if defined(__ANDROID__)
+#include <GLES2/gl2.h>
+#else
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#endif
 #include <GL/gl.h>
-#if !defined(__ANDROID__)
 #include <GL/glx.h>
 #endif
 #endif
