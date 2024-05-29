@@ -1547,6 +1547,7 @@ std::string cpu_core_count() {
   std::size_t sz = sizeof(int);
   if (!sysctlbyname("machdep.cpu.core_count", &buf, &sz, nullptr, 0))
     numcores = buf;
+  #endif
   #if (defined(_WIN32) || defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) ||  defined(__sun))
   #if defined(_WIN32)
   /* for windows programs run under WINE (no wmic cli) */
