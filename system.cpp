@@ -65,7 +65,7 @@
 #elif defined(__linux__)
 #include <sys/sysinfo.h>
 #endif
-#if (defined(_WIN32) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+#if (defined(_WIN32) || defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) ||  defined(__sun))
 #include <hwloc.h>
 #endif
 #if ((defined(__APPLE__) && defined(__MACH__)) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__sun))
@@ -1547,11 +1547,7 @@ std::string cpu_core_count() {
   std::size_t sz = sizeof(int);
   if (!sysctlbyname("machdep.cpu.core_count", &buf, &sz, nullptr, 0))
     numcores = buf;
-  #elif defined(__linux__)
-  int threads_per_core = (int)strtol(read_output("lscpu | grep 'Thread(s) per core:' | uniq | cut -d' ' -f4- | awk 'NR==1{$1=$1;print}'").c_str(), nullptr, 10);
-  numcores = (int)(strtol(((cpu_processor_count() != pointer_null()) ? cpu_processor_count().c_str() : "0"), nullptr, 10) / ((threads_per_core) ? threads_per_core : 1));
-  #endif
-  #if (defined(_WIN32) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__))
+  #if (defined(_WIN32) || defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__) ||  defined(__sun))
   #if defined(_WIN32)
   /* for windows programs run under WINE (no wmic cli) */
   if (!numcores)
@@ -1568,8 +1564,6 @@ std::string cpu_core_count() {
     }
     hwloc_topology_destroy(topology);
   }
-  #elif defined(__sun)
-  numcores = (int)strtol(read_output("kstat -m cpu_info | grep -w core_id | uniq | wc -l | awk '{print $1}'").c_str(), nullptr, 10);
   #endif
   if (!numcores)
     numcores = -1;
