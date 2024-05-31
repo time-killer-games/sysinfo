@@ -1533,7 +1533,7 @@ std::string cpu_core_count() {
   if (numcoreserror)
     return pointer_null();
   #if defined(_WIN32)
-  std::string tmp = read_output("wmic cpu get NumberOfCores");
+  std::string tmp = read_output("cmd /c wmic cpu get NumberOfCores");
   if (!tmp.empty()) {
     tmp = std::regex_replace(tmp, std::regex("NumberOfCores"), "");
     tmp = std::regex_replace(tmp, std::regex(" "), "");
